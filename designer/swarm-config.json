@@ -1,0 +1,79 @@
+{
+  "swarm_name": "Designer Swarm",
+  "version": "1.0.0",
+  "orchestrator": {
+    "type": "parallel",
+    "communication": "file-based",
+    "sync_file": "designer/swarm-state.json"
+  },
+  "agents": {
+    "architecture": {
+      "name": "Frontend Architecture Agent",
+      "responsibilities": [
+        "Component structure design",
+        "State management architecture (Zustand/Context)",
+        "Routing architecture",
+        "Performance optimization strategies",
+        "Code splitting decisions"
+      ],
+      "inputs": ["product/requirements"],
+      "outputs": ["architecture/frontend-design.md", "architecture/component-hierarchy.json"]
+    },
+    "ui_ux": {
+      "name": "UI/UX Design Agent",
+      "responsibilities": [
+        "Wireframe creation",
+        "User flow diagrams",
+        "Interaction patterns",
+        "Accessibility standards (WCAG 2.1)",
+        "Responsive design breakpoints"
+      ],
+      "inputs": ["product/user-stories"],
+      "outputs": ["designs/wireframes", "designs/user-flows.md", "designs/design-system.md"]
+    },
+    "frontend": {
+      "name": "Frontend Development Agent",
+      "responsibilities": [
+        "React component development",
+        "TypeScript interfaces",
+        "Tailwind CSS styling",
+        "API integration hooks",
+        "Form validation"
+      ],
+      "inputs": ["designs/wireframes", "api-specs-stage0.md"],
+      "outputs": ["src/components", "src/hooks", "src/types"]
+    },
+    "design_qa": {
+      "name": "Design QA Agent",
+      "responsibilities": [
+        "Accessibility testing (a11y)",
+        "Responsive design validation",
+        "Cross-browser compatibility",
+        "Performance metrics (Core Web Vitals)",
+        "Design consistency checks"
+      ],
+      "inputs": ["src/components"],
+      "outputs": ["qa/design-report.md", "qa/accessibility-audit.json"]
+    }
+  },
+  "quality_checkpoints": {
+    "design": [
+      "Mobile-first responsive",
+      "WCAG 2.1 AA compliance",
+      "Loading states for all async operations",
+      "Error boundary implementation",
+      "Consistent spacing (8px grid)"
+    ],
+    "performance": [
+      "Bundle size < 200KB initial",
+      "LCP < 2.5s",
+      "FID < 100ms",
+      "CLS < 0.1"
+    ],
+    "testing": [
+      "Component unit tests > 80% coverage",
+      "Integration tests for critical paths",
+      "Visual regression tests"
+    ]
+  }
+}

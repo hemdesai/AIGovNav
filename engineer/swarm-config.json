@@ -1,0 +1,92 @@
+{
+  "swarm_name": "Engineer Swarm",
+  "version": "1.0.0",
+  "orchestrator": {
+    "type": "parallel",
+    "communication": "file-based",
+    "sync_file": "engineer/swarm-state.json"
+  },
+  "agents": {
+    "architecture": {
+      "name": "System Architecture Agent",
+      "responsibilities": [
+        "Database schema design (PostgreSQL + Prisma)",
+        "API architecture (REST/GraphQL)",
+        "Microservices boundaries",
+        "Caching strategies (Redis)",
+        "Event-driven architecture",
+        "Integration with context7 MCP for documentation"
+      ],
+      "inputs": ["product/requirements", "product/api-specs-stage0.md"],
+      "outputs": ["architecture/system-design.md", "architecture/database-schema.prisma"]
+    },
+    "backend": {
+      "name": "Backend Development Agent",
+      "responsibilities": [
+        "API endpoint implementation (Express/Fastify)",
+        "Business logic layer",
+        "Data validation (Zod/Joi)",
+        "Authentication middleware (Supabase)",
+        "Error handling",
+        "Logging infrastructure"
+      ],
+      "inputs": ["architecture/system-design.md", "product/api-specs-stage0.md"],
+      "outputs": ["src/api", "src/services", "src/middleware"]
+    },
+    "infrastructure": {
+      "name": "Infrastructure & DevOps Agent",
+      "responsibilities": [
+        "Docker containerization",
+        "CI/CD pipeline (GitHub Actions)",
+        "Environment configuration",
+        "Database migrations",
+        "Monitoring setup (logs, metrics)",
+        "Replit deployment configuration"
+      ],
+      "inputs": ["architecture/system-design.md"],
+      "outputs": ["docker-compose.yml", ".github/workflows", "deploy/replit.nix"]
+    },
+    "engineering_qa": {
+      "name": "Engineering QA Agent",
+      "responsibilities": [
+        "Unit test implementation (Jest/Vitest)",
+        "Integration testing",
+        "API contract testing",
+        "Performance testing",
+        "Security scanning (OWASP)",
+        "Code coverage analysis"
+      ],
+      "inputs": ["src/api", "src/services"],
+      "outputs": ["tests/unit", "tests/integration", "qa/test-report.json"]
+    }
+  },
+  "quality_checkpoints": {
+    "security": [
+      "SQL injection prevention",
+      "XSS attack protection",
+      "Authentication flow security",
+      "Data encryption compliance",
+      "OWASP Top 10 vulnerability scanning"
+    ],
+    "performance": [
+      "Database query efficiency",
+      "API response time < 200ms",
+      "Caching strategy implementation",
+      "Load testing validation"
+    ],
+    "code_quality": [
+      "Naming convention compliance",
+      "Documentation completeness",
+      "Error handling robustness",
+      "Logging implementation",
+      "Code complexity metrics"
+    ],
+    "testing": [
+      "Unit test coverage > 80%",
+      "Integration test coverage",
+      "End-to-end scenario validation",
+      "Error condition testing",
+      "Performance benchmark testing"
+    ]
+  }
+}

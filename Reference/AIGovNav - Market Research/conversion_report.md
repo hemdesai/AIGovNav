@@ -1,0 +1,346 @@
+# Conversion Report
+
+## Document Information
+- **Source File**: c:\code\AIGovNav\Reference\AIGovNav - Market Research.docx
+- **File Type**: DOCX
+- **Output Directory**: c:\code\AIGovNav\TargetMDDirectory\AIGovNav - Market Research
+- **Images Directory**: c:\code\AIGovNav\TargetMDDirectory\AIGovNav - Market Research\images
+
+## Conversion Results
+- **Total Headings**: 322
+- **Images Extracted**: 7
+- **Issues Handled**: 0
+- **Status**: ✅ Completed Successfully
+
+## Extracted Images
+1. image_001_spd2m_image1.png
+2. image_002_spd2m_image2.png
+3. image_003_spd2m_image3.png
+4. image_004_spd2m_image4.png
+5. image_005_spd2m_image5.png
+6. image_006_spd2m_image6.png
+7. image_007_spd2m_image7.png
+
+## Document Structure
+- Executive Brief: AI & Data Governance SaaS Strategy
+  - What to Build: Unified Governance from Data to Decisions
+  - Why Now: Regulatory & Risk Imperatives
+  - Market Landscape: Leaders, Overlap & Gaps
+    - Overlap
+  - Focus for Differentiation: EU-First Compliance & Extensible Oversight
+  - EU AI Act (2025)
+  - **Role / Risk Tier**
+  - **Required Controls / Obligations**
+  - **Mapped Product Features**
+  - **Provider of High-Risk AI System**
+  - **Deployer (User) of High-Risk AI**
+  - **Provider of General-Purpose AI (GPAI)**
+    - Sources
+  - NIST AI Risk Management Framework 1.0 (2023)
+  - **Function (NIST AI RMF)**
+  - **Required Controls / Practices**
+  - **Mapped Product Features**
+    - Sources
+  - ISO/IEC 42001:2025 (AI Management System Standard)
+  - **ISO 42001 Key Area**
+  - **Required Controls / Obligations**
+  - **Mapped Product Features**
+  - **Leadership & Governance Program**
+  - **AI Risk Assessment & Treatment**
+  - **Operational Controls (AI Lifecycle)**
+  - **Monitoring & Continuous Improvement**
+  - **Third-Party & Supply Chain**
+    - Sources
+  - Colorado AI Act – SB 21-169 (2025)
+  - **Requirement Area**
+  - **Required Controls / Obligations**
+  - **Mapped Product Features**
+  - **Governance Structure & Oversight**
+  - **Model Inventory & Documentation**
+  - **Fairness Testing & Bias Mitigation**
+  - **Vendor & Third-Party Model Oversight**
+  - **Regulatory Reporting & Transparency**
+    - Sources
+  - Comparative Matrix of Control Objectives and Product Features
+  - **Control Objective**
+  - **EU AI Act (2025)**
+  - **NIST AI RMF (2023)**
+  - **ISO/IEC 42001:2025**
+  - **Colorado SB 21-169 (2025)**
+    - Sources
+  - Regulated Financial Services (Banking & Insurance)
+    - Regulatory Risk & Compliance
+    - Bias & Fairness Concerns
+    - Model Drift & Performance Stability
+    - Lack of Transparency & Auditability
+    - “Shadow AI” & Third-Party Models
+    - Budget & Buying Committee
+  - Healthcare and Life Sciences
+    - Data Privacy & Security
+    - Patient Safety & Efficacy (Regulatory Oversight)
+    - Bias & Equity in Outcomes
+    - Lack of Explainability & Trust
+    - Shadow AI & Unvetted Tools
+    - Budget & Buying Committee
+  - Public Sector / Government
+    - Mandates for Trustworthy AI
+    - Ethical Use, Bias & Fairness
+    - Transparency & Accountability
+    - Data Governance & Security
+    - Talent & Culture Challenges
+    - Budget & Buying Committee
+  - Industrial (Manufacturing & Energy)
+    - Model Drift & Quality Degradation
+    - Operational Safety & Reliability Risks
+    - Lack of Explainability & Troubleshooting Difficulty
+    - Data Management & Quality Challenges
+    - Security & Third-Party Risks
+    - Compliance & Audit (Emerging Requirements)
+    - Budget & Buying Committee
+    - Sources
+  - General AI Governance Workflow (Non‑LLM Models)
+    - Policy Creation** – *Establish governance policies and AI usage guidelines upfront:* Organizations define AI principles (e.g. fairness, transparency) and set risk appetite, referencing frameworks like NIST AI RMF, ISO 42001, and the EU AI Act. **Typical activities
+    - Use-Case Intake** – *Onboard and register new AI projects before development:* Each proposed AI use case or model is submitted for review. **Typical activities
+    - Risk Classification** – *Determine the risk level of the AI use case early on:* Based on the use-case details, the project is classified (e.g. *high risk*, *low risk*, etc.). **Typical activities
+    - Assessments (Legal, Compliance, Ethical)** – *Perform thorough risk and impact assessments on the AI system:* For high or moderate risk AI, multidisciplinary reviews are conducted. **Typical activities
+    - Legal & Regulatory Assessment
+    - Ethical & Bias Assessment
+    - Compliance Checks
+    - Testing & Validation** – *Rigorously test the AI model for technical robustness and compliance before deployment:* **Typical activities
+    - Performance testing
+    - Fairness and bias testing
+    - Robustness and security testing
+    - Explainability testing
+    - Approvals & Human-in-the-Loop (HITL)** – *Obtain required human approvals and ensure human oversight measures are in place:* **Typical activities
+    - Deployment** – *Release the AI model into production under controlled conditions:* **Typical activities
+    - Monitoring & Incident Handling** – *Continuously monitor the AI system in production and manage incidents or deviations:* **Typical activities
+    - Performance monitoring
+    - Outcome monitoring
+    - Policy compliance monitoring
+    - Incident handling
+    - Reporting & Attestations** – *Document the AI system’s governance status and produce reports for accountability:* **Typical activities
+    - Regulatory reporting
+    - Internal reporting
+    - Attestations
+  - LLM-Specific Governance Workflow (Generative AI Models)
+    - Prompt/Dataset Changes** – *Manage changes to prompts or training data that could alter an LLM’s behavior:* Because Large Language Models (LLMs) are highly sensitive to their prompts and training data, any significant change here is treated as a governance event. **Controls/Metrics
+    - Evaluation Gate Setup** – *Define automated evaluation tests that the LLM must pass before deployment:* **Controls/Metrics
+    - Red Team Review** – *Conduct human-led adversarial testing on the LLM:* **Controls/Metrics
+    - Safety Guardrails (Toxicity & Jailbreak Filters)** – *Implement runtime safeguards to filter or mitigate problematic LLM outputs:* **Controls/Metrics
+    - Policy enforcement engine
+    - Multi-layered safeguards
+    - Configuration management for guardrails
+    - Transparency logs
+    - Model Updates** – *Manage ongoing model iterations and drift for LLMs:* Unlike static software, LLMs may be updated frequently (fine-tuned with new data, or replaced with newer model versions). **Controls/Metrics
+    - Deployment Monitoring (Hallucination Metrics & Incident Triggers)** – *Continuously monitor the live LLM for errors like hallucinations and handle incidents:* **Controls/Metrics
+  - EU AI Act (Regulation (EU) 2024/1689) – High-Risk AI and GPAI Models
+  - **Role / AI System**
+  - **Regulatory Control Obligation**
+  - **AI Governance Platform Feature Mapping**
+  - **Feature Availability**
+  - **Provider (High-Risk AI)**
+    - Risk & Quality Management
+    - Exists
+  - **Provider (High-Risk AI)**
+    - Data Quality & Bias Tools
+    - Exists
+  - **Provider (High-Risk AI)**
+    - Model Documentation & Logging
+    - Exists
+  - **Provider (High-Risk AI)**
+    - Explainability & Oversight
+    - Partially Exists
+  - **Deployers (High-Risk AI)**
+    - Usage Governance
+    - Partially Exists
+  - **Deployers (High-Risk AI)**
+    - Monitoring & Incident Management
+    - Exists
+  - **Deployers (High-Risk AI)**
+    - Outcome Disclosure
+    - To Build (Later)
+    - Foundation Model Documentation
+    - Partially Exists
+  - **Provider of GPAI Model with Systemic Risk**
+    - Advanced Evaluation & Post-Market Monitoring
+    - To Build
+    - Sources
+  - NIST AI RMF 1.0 (Jan 2023) – AI Risk Management Framework
+  - **AI RMF Function**
+  - **Key Control Practices**
+  - **AI Platform Feature Mapping**
+  - **Feature Availability**
+    - Policy & Governance Management
+    - Exists
+    - Use Case Intake & Model Catalog
+    - Exists
+    - Analytics & Validation Tools
+    - Exists
+    - Risk Mitigation Workflow & Monitoring
+    - Exists
+    - Sources
+  - ISO/IEC 42001:2025 – AI Management System Standard
+  - **ISO 42001 Role**
+  - **Responsibilities under ISO 42001**
+  - **AI Platform Feature Mapping**
+  - **Feature Availability**
+    - Responsible design and data preparation
+    - Ethical Design & Documentation
+    - Partial – MVP
+    - System integration, testing, and validation
+    - Validation & Release Workflow
+    - Exists
+    - Responsible use and monitoring
+    - Operational Monitoring & Feedback
+    - Partial – MVP
+    - Sources
+  - OCC SR 11-7 (2011) – Model Risk Management (Banking)
+  - **MRM Role / Function**
+  - **SR 11-7 Control Expectation**
+  - **AI Platform Feature Mapping**
+  - **Feature Availability**
+    - Sound development & documentation
+    - Model Development Documentation
+    - Exists (MVP)
+    - Independent validation & ongoing monitoring
+    - Validation & Monitoring Tools
+    - Exists
+    - Governance framework & aggregate oversight
+    - MRM Program Management
+    - Exists
+    - Sources
+  - Colorado AI Act (CAIA, 2024) – **Colorado SB 21-169** (Effective 2026)
+  - **CAIA Role**
+  - **Key Obligations (High-Risk AI systems)**
+  - **AI Platform Feature Mapping**
+  - **Feature Availability**
+    - Documentation and disclosure
+    - Model Cards & Risk Reports
+    - Partial – MVP
+    - Risk management program
+    - Governance Program & Assessments
+    - Exists/MVP
+    - Consumer notices and transparency
+    - Transparency & Recourse Tools
+    - To Build – Later
+    - Sources
+    - **Feature matrix — Credo AI vs IBM ****watsonx.governance**** vs ****Monitaur**
+  - **Capability**
+  - **Credo AI**
+  - **IBM ****watsonx.governance**
+  - **Monitaur**
+  - **Policy/control library**
+  - **Risk taxonomy & registers**
+  - **EU AI Act mapping**
+  - **NIST RMF / ISO 42001 / Colorado**
+  - **Data lineage & catalogs**
+  - **Model registry**
+  - **LLM governance (prompt/dataset governance)**
+  - **LLM eval harness & metrics (toxicity, hallucination)**
+  - **Red-teaming**** / jailbreak monitors**
+  - **Safety guardrails & content safety**
+  - **Testing/validation**
+  - **Approvals & human-in-the-loop**
+  - **Audit trails**
+  - **Monitoring & incident ****mgmt**
+  - **Reporting & attestations**
+  - **RBAC & ****SoD**
+  - **Third-party/vendor model risk**
+  - **SDLC/****MLOps**** integrations (Jira, Git, CI/CD)**
+  - **GRC integrations (ServiceNow, Archer, ****OneTrust****)**
+  - **Security (residency, encryption, tenancy, KMS)**
+  - **Deployment options**
+  - **Pricing/packaging (public)**
+  - **Fast take (EU-first lens)**
+    - EU AI Act coverage
+    - LLM ops depth
+    - GRC stack
+  - **Short supporting quotes (≤25 words)**
+- Gap-to-MVP Plan: GenAI-First AI Governance SaaS (EU AI Act Readiness)
+  - Current Landscape – Feature Matrix Overview (Credo AI vs IBM watsonx.governance vs Monitaur)
+    - Credo AI
+    - IBM ****watsonx.governance****
+    - Monitaur****
+    - Summary
+  - Missing Capabilities for Full EU AI Act Coverage (Gaps for High-Risk AI & GPAI)
+    - Use Case Risk Classification & Intake
+    - Comprehensive Risk Management System
+    - Data Governance & Bias Testing
+    - Technical Documentation & Transparency Artifacts
+    - Audit Logging & Record-Keeping
+    - Human Oversight & Approval Workflows
+    - Generative AI Prompt & Content Controls
+    - Incident Tracking & Post-Market Monitoring
+    - Cybersecurity and Model Integrity Checks
+  - 90-Day MVP Scope – Focusing on Critical Workflows, Modules, and Integrations
+    - Critical Workflows (MVP)
+    - AI Use Case Intake & Risk Classification
+    - Policy and Control Mapping at Design
+    - Prompt & Dataset Review (Generative AI Use Cases)
+    - Evaluation Gates & Testing
+    - Red Team Testing & Sign-off
+    - Pre-Deployment Approval & Human Oversight Plan
+    - Post-Deployment Monitoring & Incident Workflow (Minimal for MVP)
+    - Essential Modules & Features (MVP)
+    - Policy/Control Library & Compliance Packs
+    - AI Risk Register & Issue Management
+    - Evaluations & Test Harness for LLMs
+    - AI Policy Compliance Checker
+    - Audit Logging & Change Tracking
+    - Approval & Workflow Engine
+    - Integrated Control of AI Endpoints (Minimal)
+    - Must-Have UI Components & Integrations (MVP)
+    - Intuitive Dashboard & Project Workspace
+    - Risk & Compliance Scorecard
+    - Policy & Control Manager UI
+    - Workflow Inbox & Notifications
+    - Integration: ServiceNow (or GRC system) Touchpoint
+    - Integration: CI/CD & Dev Pipeline Hooks
+    - Integration: LLM Evaluation APIs
+    - Single Sign-On (SSO) and User Management
+  - Post-MVP (v2+) Roadmap – Expanded Scope for Broad AI Governance
+    - Support for Classical ML Models & Broader AI Pipelines
+    - More Regulatory Frameworks & Standards
+    - NIST AI Risk Management Framework (RMF)
+    - ISO/IEC 42001 (AI Management System Standard)
+    - Other Standards & Frameworks
+    - Advanced GRC & IT Integrations
+    - GRC Platforms
+    - SIEM/Security Tools
+    - DevOps/****MLops****
+    - Collaboration Tools
+    - Enhanced Red-Teaming & Adversarial Testing Module
+    - Continuous Monitoring & AI “Control Tower”
+    - Automated Documentation & Reporting
+    - Internal Governance Reports
+    - Scalability and Enterprise Readiness
+  - Why Now, Wedge Strategy, and Extensibility
+    - Timing (Why Now?)
+    - Wedge Strategy (EU AI Act as the Beachhead)
+    - Extensibility for Broader Governance Stack
+  - **Sources:**
+  - **Stage**
+  - **Phase (target)**
+  - **Feature / Capability**
+  - **Opportunity Identified**
+  - **Why build (crisp)**
+  - **For whom**
+  - **AI use-case intake + registry**
+  - **EU AI Act policy pack (v1)**
+  - **RBAC & SSO (Okta/SAML)**
+  - **Risk classification engine (Annex III rules)**
+  - **Prompt governance (versioning + review)**
+  - **Dataset governance checklist**
+  - **LLM eval harness (toxicity, hallucination, bias)**
+  - **Approval gate workflow (legal/risk sign-off)**
+  - **Audit log (****immut****., v1)**
+  - **Guardrails ****middleware**** (pre/post filters)**
+  - **Red-team workflow + findings register**
+  - **Tech documentation generator (“EU Tech File”)**
+  - **CI/CD & API hooks (governance-as-code)**
+  - **ServiceNow connector (tickets/tasks)**
+  - **Incident register (post-market v1)**
+  - **Production monitoring (light) + drift alerts**
+  - **Disclosure templates (user notice/explainability)**
+  - **Executive dashboard (model risk/compliance)**
+  - **Report/attestation exports (EU-Act pack)**
