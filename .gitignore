@@ -4,3 +4,7 @@ node_modules/
 dist/
 build/
 *.log
+.DS_Store
+package-lock.json
+.vscode/
+coverage/

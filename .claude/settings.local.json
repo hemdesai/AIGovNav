@@ -7,7 +7,11 @@
       "Bash(git commit:*)",
       "Bash(git remote add:*)",
       "Bash(git branch:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(npm install)",
+      "Bash(curl:*)",
+      "Bash(ping:*)"
     ],
     "deny": [],
     "ask": []

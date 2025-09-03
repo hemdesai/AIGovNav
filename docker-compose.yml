@@ -1,0 +1,67 @@
+# Docker Compose for Rancher Desktop
+version: '3.8'
+
+services:
+  # Frontend Development Server
+  frontend:
+    image: node:22-alpine
+    working_dir: /app
+    command: npm run dev:frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - aigovnav
+
+  # Backend API Server
+  backend:
+    image: node:22-alpine
+    working_dir: /app
+    command: npm run dev:backend
+    ports:
+      - "4000:4000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    networks:
+      - aigovnav
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - aigovnav
+
+  # Prisma Studio (Database GUI)
+  prisma-studio:
+    image: node:22-alpine
+    working_dir: /app
+    command: npx prisma studio
+    ports:
+      - "5555:5555"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    networks:
+      - aigovnav
+
+networks:
+  aigovnav:
+    driver: bridge
+
+volumes:
+  redis_data:
