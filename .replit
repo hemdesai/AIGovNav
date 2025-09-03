@@ -1,0 +1,57 @@
+run = "npm run dev"
+entrypoint = "src/index.ts"
+
+hidden = [".build", ".config"]
+
+[languages]
+[languages.typescript]
+pattern = "**/*.{ts,tsx}"
+[languages.typescript.languageServer]
+start = "typescript-language-server --stdio"
+
+[languages.javascript]
+pattern = "**/*.{js,jsx}"
+[languages.javascript.languageServer]
+start = "javascript-typescript-language-server --stdio"
+
+[env]
+NODE_ENV = "development"
+PATH = "/home/runner/$REPL_SLUG/.config/npm/node_global/bin:/home/runner/$REPL_SLUG/node_modules/.bin"
+
+[packager]
+language = "nodejs"
+
+[packager.features]
+packageSearch = true
+guessImports = true
+enabledForHosting = false
+
+[nix]
+channel = "stable-22_11"
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", "package.json"]
+
+[deployment]
+run = ["npm", "start"]
+deploymentTarget = "cloudrun"
+ignorePorts = false
+
+[auth]
+pageEnabled = false
+buttonEnabled = false
+
+[[ports]]
+localPort = 3000
+externalPort = 3000
+exposeLocalhost = true
+
+[[ports]]
+localPort = 5173
+externalPort = 80
+exposeLocalhost = true
+
+[[ports]]
+localPort = 4000
+externalPort = 4000
+exposeLocalhost = true
