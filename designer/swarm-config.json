@@ -17,7 +17,12 @@
         "Code splitting decisions"
       ],
       "inputs": ["product/requirements"],
-      "outputs": ["architecture/frontend-design.md", "architecture/component-hierarchy.json"]
+      "outputs": ["architecture/frontend-design.md", "architecture/component-hierarchy.json"],
+      "context7": {
+        "enabled": true,
+        "topics": ["React architecture patterns", "state management best practices", "routing patterns", "performance optimization", "code splitting"],
+        "frameworks": ["react", "typescript", "vite"]
+      }
     },
     "ui_ux": {
       "name": "UI/UX Design Agent",
@@ -29,7 +34,12 @@
         "Responsive design breakpoints"
       ],
       "inputs": ["product/user-stories"],
-      "outputs": ["designs/wireframes", "designs/user-flows.md", "designs/design-system.md"]
+      "outputs": ["designs/wireframes", "designs/user-flows.md", "designs/design-system.md"],
+      "context7": {
+        "enabled": true,
+        "topics": ["UX design patterns", "accessibility guidelines", "responsive design", "design systems", "user flow optimization"],
+        "frameworks": ["figma", "tailwindcss", "wcag"]
+      }
     },
     "frontend": {
       "name": "Frontend Development Agent",
@@ -41,7 +51,12 @@
         "Form validation"
       ],
       "inputs": ["designs/wireframes", "api-specs-stage0.md"],
-      "outputs": ["src/components", "src/hooks", "src/types"]
+      "outputs": ["src/components", "src/hooks", "src/types"],
+      "context7": {
+        "enabled": true,
+        "topics": ["React component patterns", "TypeScript best practices", "Tailwind CSS utilities", "API integration patterns", "form validation"],
+        "frameworks": ["react", "typescript", "tailwindcss"]
+      }
     },
     "design_qa": {
       "name": "Design QA Agent",
@@ -53,7 +68,12 @@
         "Design consistency checks"
       ],
       "inputs": ["src/components"],
-      "outputs": ["qa/design-report.md", "qa/accessibility-audit.json"]
+      "outputs": ["qa/design-report.md", "qa/accessibility-audit.json"],
+      "context7": {
+        "enabled": true,
+        "topics": ["accessibility testing tools", "responsive design testing", "browser compatibility", "Core Web Vitals optimization", "design system validation"],
+        "frameworks": ["jest", "cypress", "lighthouse"]
+      }
     }
   },
   "quality_checkpoints": {

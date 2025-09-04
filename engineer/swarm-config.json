@@ -18,7 +18,12 @@
         "Integration with context7 MCP for documentation"
       ],
       "inputs": ["product/requirements", "product/api-specs-stage0.md"],
-      "outputs": ["architecture/system-design.md", "architecture/database-schema.prisma"]
+      "outputs": ["architecture/system-design.md", "architecture/database-schema.prisma"],
+      "context7": {
+        "enabled": true,
+        "topics": ["database design patterns", "REST API architecture", "microservices patterns", "Redis caching strategies"],
+        "frameworks": ["nodejs", "prisma", "postgresql"]
+      }
     },
     "backend": {
       "name": "Backend Development Agent",
@@ -31,7 +36,12 @@
         "Logging infrastructure"
       ],
       "inputs": ["architecture/system-design.md", "product/api-specs-stage0.md"],
-      "outputs": ["src/api", "src/services", "src/middleware"]
+      "outputs": ["src/api", "src/services", "src/middleware"],
+      "context7": {
+        "enabled": true,
+        "topics": ["Express.js best practices", "TypeScript API development", "authentication middleware", "error handling patterns", "data validation"],
+        "frameworks": ["nodejs", "express", "typescript"]
+      }
     },
     "infrastructure": {
       "name": "Infrastructure & DevOps Agent",
@@ -41,10 +51,15 @@
         "Environment configuration",
         "Database migrations",
         "Monitoring setup (logs, metrics)",
-        "Replit deployment configuration"
+        "Deployment configuration"
       ],
       "inputs": ["architecture/system-design.md"],
-      "outputs": ["docker-compose.yml", ".github/workflows", "deploy/replit.nix"]
+      "outputs": ["docker-compose.yml", ".github/workflows", "deploy/"],
+      "context7": {
+        "enabled": true,
+        "topics": ["Docker best practices", "GitHub Actions workflows", "PostgreSQL deployment", "monitoring setup", "CI/CD patterns"],
+        "frameworks": ["docker", "github-actions", "postgresql"]
+      }
     },
     "engineering_qa": {
       "name": "Engineering QA Agent",
@@ -57,7 +72,12 @@
         "Code coverage analysis"
       ],
       "inputs": ["src/api", "src/services"],
-      "outputs": ["tests/unit", "tests/integration", "qa/test-report.json"]
+      "outputs": ["tests/unit", "tests/integration", "qa/test-report.json"],
+      "context7": {
+        "enabled": true,
+        "topics": ["Jest testing patterns", "API testing best practices", "security testing", "performance testing", "test coverage strategies"],
+        "frameworks": ["jest", "vitest", "supertest"]
+      }
     }
   },
   "quality_checkpoints": {

@@ -4,6 +4,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 
+// Import routes
+import intakeRoutes from './routes/intake.js';
+
 // Load environment variables
 dotenv.config();
 
@@ -42,6 +45,9 @@ app.get('/api', (req, res) => {
     }
   });
 });
+
+// API Routes
+app.use('/api/v1/intake', intakeRoutes);
 
 // Start server
 app.listen(PORT, () => {
