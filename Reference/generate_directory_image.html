@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directory Structure Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        #canvas-container {
+            display: none;
+        }
+        button {
+            background: #4A90E2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #357ABD;
+        }
+        #status {
+            margin: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Governance Navigator - Directory Structure Image Generator</h1>
+    <button onclick="generateImage()">Generate PNG Image</button>
+    <button onclick="downloadImage()">Download Image</button>
+    <div id="status"></div>
+    <div id="canvas-container">
+        <canvas id="canvas" width="2400" height="3000"></canvas>
+    </div>
+
+    <script>
+        let imageGenerated = false;
+
+        function generateImage() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas and set white background
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Title
+            ctx.fillStyle = '#2d3748';
+            ctx.font = 'bold 72px Segoe UI';
+            ctx.textAlign = 'center';
+            ctx.fillText('🚀 AI Governance Navigator', canvas.width/2, 100);
+            
+            ctx.font = '36px Segoe UI';
+            ctx.fillStyle = '#718096';
+            ctx.fillText('Complete Directory Structure', canvas.width/2, 160);
+            
+            // Helper function to draw a section box
+            function drawSection(x, y, width, height, title, items, color) {
+                // Draw box
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
+                ctx.strokeRect(x, y, width, height);
+                
+                // Fill with light color
+                ctx.fillStyle = color + '20';
+                ctx.fillRect(x, y, width, height);
+                
+                // Draw title
+                ctx.fillStyle = color;
+                ctx.font = 'bold 32px Segoe UI';
+                ctx.textAlign = 'left';
+                ctx.fillText(title, x + 20, y + 40);
+                
+                // Draw items
+                ctx.fillStyle = '#2d3748';
+                ctx.font = '24px Segoe UI';
+                let itemY = y + 80;
+                items.forEach(item => {
+                    if (item.startsWith('•')) {
+                        ctx.font = '22px Segoe UI';
+                        ctx.fillStyle = '#4a5568';
+                        ctx.fillText(item, x + 40, itemY);
+                    } else if (item.startsWith('  ')) {
+                        ctx.font = '20px Segoe UI';
+                        ctx.fillStyle = '#718096';
+                        ctx.fillText(item, x + 60, itemY);
+                    } else {
+                        ctx.font = 'bold 24px Segoe UI';
+                        ctx.fillStyle = '#2d3748';
+                        ctx.fillText(item, x + 20, itemY);
+                    }
+                    itemY += 35;
+                });
+            }
+            
+            // Draw main sections
+            let yPos = 250;
+            
+            // Core Application
+            drawSection(50, yPos, 550, 500, '💻 Core Application', [
+                'src/',
+                '',
+                'backend/',
+                '• data/ (templates, policies)',
+                '• middleware/ (auth, validation)',
+                '• routes/ (intake, compliance)',
+                '• services/ (risk classification)',
+                '• scripts/ (initialization)',
+                '',
+                'frontend/',
+                '• components/ (Layout, Routes)',
+                '• contexts/ (AuthContext)',
+                '• pages/ (Dashboard, Registry)',
+                '• services/ (API layer)'
+            ], '#4A90E2');
+            
+            // Quality Assurance
+            drawSection(650, yPos, 550, 500, '✅ Quality Assurance', [
+                'qa/',
+                '',
+                'validators/',
+                '  - EUAIActCompliance.ts',
+                '  - LLMGovernance.ts',
+                '  - PrismaIntegrity.ts',
+                '',
+                'categories/',
+                '• security/',
+                '• performance/',
+                '• quality/',
+                '• architecture/',
+                '• testing/'
+            ], '#50E3C2');
+            
+            // Swarm Agents
+            drawSection(1250, yPos, 550, 500, '🤖 Swarm Agents', [
+                'product/',
+                '• user-stories-ai-intake.md',
+                '• api-specs-stage0.md',
+                '• requirements-eu-ai-act.md',
+                '',
+                'engineer/',
+                '• init-engineer-swarm.md',
+                '• swarm-config.json',
+                '',
+                'designer/',
+                '• init-designer-swarm.md',
+                '• swarm-config.json'
+            ], '#F5A623');
+            
+            // Tests & Database
+            drawSection(1850, yPos, 500, 500, '🧪 Tests & Database', [
+                'tests/',
+                '• unit/',
+                '  - intake.test.ts',
+                '  - riskClassification.test.ts',
+                '• integration/',
+                '  - auth.test.ts',
+                '',
+                'prisma/',
+                '• schema.prisma',
+                '  - AISystem',
+                '  - User',
+                '  - PolicyPack',
+                '  - AuditLog'
+            ], '#BD10E0');
+            
+            yPos += 550;
+            
+            // Configuration
+            drawSection(50, yPos, 550, 400, '⚙️ Configuration', [
+                'Config Files:',
+                '• docker-compose.yml',
+                '• package.json',
+                '• tsconfig.json',
+                '• vite.config.ts',
+                '• vitest.config.ts',
+                '• tailwind.config.js',
+                '',
+                'DevOps:',
+                '• .github/workflows/qa.yml',
+                '• .claude/settings.json'
+            ], '#7ED321');
+            
+            // Documentation
+            drawSection(650, yPos, 550, 400, '📚 Documentation', [
+                'Core Docs:',
+                '• CLAUDE.md',
+                '• QA_CALIBRATION_SUMMARY.md',
+                '• CTO_DEMO_MATERIALS.md',
+                '',
+                'Guides:',
+                '• replit-setup-guide.md',
+                '• setup-github.md',
+                '• start-local.md',
+                '• swarm-orchestrator.md'
+            ], '#9013FE');
+            
+            // Reference
+            drawSection(1250, yPos, 550, 400, '📂 Reference', [
+                'Market Research/',
+                '• AIGovNav Research.md',
+                '• images/ (7 files)',
+                '• conversion_report.md',
+                '',
+                'Reference Images:',
+                '• AI Registry.png',
+                '• HR System Test.png',
+                '• dashboard.png',
+                '• swarm diagrams (2)'
+            ], '#FF6B6B');
+            
+            // Statistics Box
+            drawSection(1850, yPos, 500, 400, '📊 Statistics', [
+                'QA Metrics:',
+                '• 147+ Checkpoints',
+                '• 8 Validators',
+                '• 3 Swarm Agents',
+                '',
+                'Compliance:',
+                '• 27 EU AI Act checks',
+                '• 23 LLM Governance',
+                '• 14 Prisma Integrity',
+                '',
+                'Coverage:',
+                '• 60% Test threshold',
+                '• 90% Security req'
+            ], '#4ECDC4');
+            
+            yPos += 450;
+            
+            // Tech Stack
+            ctx.fillStyle = '#f7fafc';
+            ctx.fillRect(50, yPos, 2300, 300);
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(50, yPos, 2300, 300);
+            
+            ctx.fillStyle = '#2d3748';
+            ctx.font = 'bold 48px Segoe UI';
+            ctx.textAlign = 'center';
+            ctx.fillText('💻 Technology Stack', canvas.width/2, yPos + 60);
+            
+            // Tech stack columns
+            ctx.font = '28px Segoe UI';
+            ctx.textAlign = 'left';
+            
+            // Frontend
+            ctx.font = 'bold 32px Segoe UI';
+            ctx.fillText('Frontend:', 200, yPos + 120);
+            ctx.font = '26px Segoe UI';
+            ctx.fillText('React 18 + TypeScript', 200, yPos + 160);
+            ctx.fillText('Vite + TailwindCSS', 200, yPos + 195);
+            ctx.fillText('React Router + Zustand', 200, yPos + 230);
+            
+            // Backend
+            ctx.font = 'bold 32px Segoe UI';
+            ctx.fillText('Backend:', 700, yPos + 120);
+            ctx.font = '26px Segoe UI';
+            ctx.fillText('Node.js + Express', 700, yPos + 160);
+            ctx.fillText('Prisma + PostgreSQL', 700, yPos + 195);
+            ctx.fillText('Supabase Auth + JWT', 700, yPos + 230);
+            
+            // Infrastructure
+            ctx.font = 'bold 32px Segoe UI';
+            ctx.fillText('Infrastructure:', 1200, yPos + 120);
+            ctx.font = '26px Segoe UI';
+            ctx.fillText('Docker + GitHub Actions', 1200, yPos + 160);
+            ctx.fillText('Vitest + ESLint', 1200, yPos + 195);
+            ctx.fillText('Context7 Integration', 1200, yPos + 230);
+            
+            // AI Features
+            ctx.font = 'bold 32px Segoe UI';
+            ctx.fillText('AI Features:', 1700, yPos + 120);
+            ctx.font = '26px Segoe UI';
+            ctx.fillText('EU AI Act Engine', 1700, yPos + 160);
+            ctx.fillText('LLM Monitoring', 1700, yPos + 195);
+            ctx.fillText('Risk Classification', 1700, yPos + 230);
+            
+            yPos += 350;
+            
+            // Key Features
+            ctx.fillStyle = '#fef3c7';
+            ctx.fillRect(50, yPos, 2300, 200);
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(50, yPos, 2300, 200);
+            
+            ctx.fillStyle = '#92400e';
+            ctx.font = 'bold 48px Segoe UI';
+            ctx.textAlign = 'center';
+            ctx.fillText('🎯 Key Features', canvas.width/2, yPos + 60);
+            
+            ctx.font = '30px Segoe UI';
+            ctx.textAlign = 'left';
+            ctx.fillText('✓ EU AI Act Compliance Engine', 300, yPos + 120);
+            ctx.fillText('✓ Real-time LLM/Prompt Monitoring', 300, yPos + 160);
+            ctx.fillText('✓ Multi-Agent Swarm Architecture', 1300, yPos + 120);
+            ctx.fillText('✓ Automated Risk Classification', 1300, yPos + 160);
+            
+            // Footer
+            ctx.fillStyle = '#718096';
+            ctx.font = '24px Segoe UI';
+            ctx.textAlign = 'center';
+            ctx.fillText('AI Governance Navigator - Enterprise-grade AI Governance Platform', canvas.width/2, 2900);
+            ctx.fillText('Compliant with EU AI Act | Real-time Monitoring | Automated Documentation', canvas.width/2, 2940);
+            
+            imageGenerated = true;
+            document.getElementById('status').innerHTML = '<span style="color: green;">✓ Image generated successfully! Click "Download Image" to save.</span>';
+        }
+        
+        function downloadImage() {
+            if (!imageGenerated) {
+                alert('Please generate the image first!');
+                return;
+            }
+            
+            const canvas = document.getElementById('canvas');
+            const link = document.createElement('a');
+            link.download = 'AIGovNav_Directory_Structure.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            document.getElementById('status').innerHTML = '<span style="color: blue;">✓ Image downloaded as AIGovNav_Directory_Structure.png</span>';
+        }
+        
+        // Auto-generate on load
+        window.onload = function() {
+            generateImage();
+        };
+    </script>
+</body>
+</html>

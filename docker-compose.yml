@@ -34,6 +34,28 @@ services:
     networks:
       - aigovnav
 
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: aigovnav-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: aigovnav
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d aigovnav"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - aigovnav
+
   # Redis for caching and sessions
   redis:
     image: redis:7-alpine
@@ -65,3 +87,4 @@ networks:
 
 volumes:
   redis_data:
+  postgres_data:

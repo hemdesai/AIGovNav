@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight, ChevronLeft, AlertCircle, CheckCircle, Info } from 'lucide-react';
+import { API_ENDPOINTS, getAuthHeaders } from '../config/api';
 
 interface IntakeFormData {
   // Basic Information
@@ -185,13 +186,39 @@ export const IntakeForm: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch('/api/v1/intake', {
+      // Map frontend field names to backend/database field names
+      const submissionData = {
+        name: formData.systemName,
+        description: formData.systemDescription,
+        purpose: formData.systemPurpose,
+        intendedUse: formData.intendedUse,
+        actorRole: formData.actorRole,
+        isGPAI: formData.isGPAI,
+        usesGPAI: formData.usesGPAI,
+        providesEssentialService: formData.providesEssentialService,
+        categories: formData.categories,
+        geographicScope: formData.geographicScope,
+        targetUsers: formData.targetUsers,
+        dataTypes: formData.dataTypes,
+        automationLevel: formData.automationLevel,
+        transparencyMeasures: formData.transparencyMeasures || '',
+        humanOversight: formData.humanOversight || '',
+        performanceMetrics: formData.performanceMetrics || '',
+        biasControls: formData.biasControls || '',
+        foreseenMisuse: formData.foreseenMisuse || '',
+        technicalDocumentation: formData.technicalDocumentation || '',
+        // Add required fields with defaults for now
+        dataResidency: 'EU',
+        controllerStatus: 'CONTROLLER',
+        modelType: 'Unknown', // Will be updated in future versions
+        deploymentContext: 'Production',
+        department: 'AI Development'
+      };
+
+      const response = await fetch(API_ENDPOINTS.INTAKE_CREATE, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify(formData)
+        headers: getAuthHeaders(),
+        body: JSON.stringify(submissionData)
       });
 
       const result = await response.json();
@@ -199,7 +226,7 @@ export const IntakeForm: React.FC = () => {
       if (result.success) {
         navigate(`/intake/${result.data.id}/success`);
       } else {
-        alert(`Error: ${result.error}`);
+        alert(`Error: ${result.error || 'Unknown error occurred'}`);
       }
     } catch (error) {
       console.error('Submission error:', error);

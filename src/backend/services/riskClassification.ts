@@ -6,9 +6,10 @@
 import { AISystem } from '@prisma/client';
 
 export interface RiskClassificationResult {
-  riskLevel: 'minimal' | 'limited' | 'high' | 'unacceptable';
+  riskLevel: 'MINIMAL_RISK' | 'LIMITED_RISK' | 'HIGH_RISK' | 'PROHIBITED';
   confidenceScore: number;
   annexIIICategories: string[];
+  euActArticles: string[];
   rationale: string;
   mitigationRequired: string[];
   recommendations: string[];
@@ -87,9 +88,10 @@ export class RiskClassificationService {
     const prohibitedCheck = this.checkProhibitedPractices(aiSystem);
     if (prohibitedCheck.isProhibited) {
       return {
-        riskLevel: 'unacceptable',
+        riskLevel: 'PROHIBITED',
         confidenceScore: prohibitedCheck.confidence,
         annexIIICategories: [],
+        euActArticles: ['Article 5'],
         rationale: prohibitedCheck.rationale,
         mitigationRequired: ['System modification required - prohibited practice detected'],
         recommendations: prohibitedCheck.recommendations
@@ -100,10 +102,11 @@ export class RiskClassificationService {
     const annexCheck = this.checkAnnexIIICategories(aiSystem);
     if (annexCheck.categories.length > 0) {
       return {
-        riskLevel: 'high',
+        riskLevel: 'HIGH_RISK',
         confidenceScore: annexCheck.confidence,
         annexIIICategories: annexCheck.categories,
-        rationale: annexCheck.rationale,
+        euActArticles: ['Article 6', 'Annex III'],
+        rationale: `${annexCheck.rationale}. High-risk AI systems are subject to strict requirements including risk management, data governance, technical documentation, transparency, human oversight, and accuracy requirements under Articles 8-15 of the EU AI Act.`,
         mitigationRequired: this.getHighRiskMitigations(annexCheck.categories),
         recommendations: this.getHighRiskRecommendations(aiSystem, annexCheck.categories)
       };
@@ -113,10 +116,11 @@ export class RiskClassificationService {
     const limitedRiskCheck = this.checkLimitedRisk(aiSystem);
     if (limitedRiskCheck.isLimited) {
       return {
-        riskLevel: 'limited',
+        riskLevel: 'LIMITED_RISK',
         confidenceScore: limitedRiskCheck.confidence,
         annexIIICategories: [],
-        rationale: limitedRiskCheck.rationale,
+        euActArticles: ['Article 52'],
+        rationale: `${limitedRiskCheck.rationale}. Under Article 52, these systems must comply with transparency obligations to ensure users are aware they are interacting with an AI system.`,
         mitigationRequired: limitedRiskCheck.mitigations,
         recommendations: limitedRiskCheck.recommendations
       };
@@ -124,15 +128,17 @@ export class RiskClassificationService {
 
     // Default to minimal risk
     return {
-      riskLevel: 'minimal',
+      riskLevel: 'MINIMAL_RISK',
       confidenceScore: 0.85,
       annexIIICategories: [],
-      rationale: 'System does not fall under high-risk categories and has minimal impact on fundamental rights',
+      euActArticles: [],
+      rationale: 'System does not fall under prohibited or high-risk categories defined in the EU AI Act. The system has minimal impact on fundamental rights and is not subject to specific regulatory requirements, though voluntary adoption of AI best practices is encouraged.',
       mitigationRequired: [],
       recommendations: [
         'Maintain documentation of system purpose and design',
-        'Implement voluntary best practices',
-        'Consider regular impact assessments'
+        'Implement voluntary best practices for responsible AI',
+        'Consider regular impact assessments',
+        'Monitor for changes in use case that might affect risk classification'
       ]
     };
   }
@@ -146,7 +152,7 @@ export class RiskClassificationService {
     rationale: string;
     recommendations: string[];
   } {
-    const systemText = `${aiSystem.systemDescription} ${aiSystem.systemPurpose} ${aiSystem.intendedUse}`.toLowerCase();
+    const systemText = `${aiSystem.description} ${aiSystem.purpose} ${aiSystem.intendedUse || ''}`.toLowerCase();
     
     const detectedPractices = this.PROHIBITED_PRACTICES.filter(practice => 
       systemText.includes(practice.toLowerCase())
@@ -156,11 +162,12 @@ export class RiskClassificationService {
       return {
         isProhibited: true,
         confidence: 0.95,
-        rationale: `System involves prohibited practices under Article 5: ${detectedPractices.join(', ')}`,
+        rationale: `System involves prohibited practices under Article 5 of the EU AI Act: ${detectedPractices.join(', ')}. These practices are considered unacceptable risks as they contravene Union values by violating fundamental rights and pose clear threats to safety, livelihoods, and democratic processes.`,
         recommendations: [
-          'Cease development/deployment of this system',
+          'Immediately cease development/deployment of this system',
           'Consult legal counsel for compliance options',
-          'Consider alternative approaches that comply with Article 5'
+          'Consider alternative approaches that comply with Article 5',
+          'Review system design to remove prohibited elements'
         ]
       };
     }
@@ -174,6 +181,24 @@ export class RiskClassificationService {
   }
 
   /**
+   * Map intake form category IDs to classification system IDs
+   */
+  private mapIntakeCategory(intakeCategory: string): string | null {
+    const mapping: { [key: string]: string } = {
+      'biometrics': 'annex_iii_1',
+      'critical_infrastructure': 'annex_iii_2', 
+      'education': 'annex_iii_3',
+      'employment': 'annex_iii_4',
+      'essential_services': 'annex_iii_5',
+      'law_enforcement': 'annex_iii_6',
+      'migration': 'annex_iii_7',
+      'justice': 'annex_iii_8'
+    };
+    
+    return mapping[intakeCategory] || null;
+  }
+
+  /**
    * Check if system falls under Annex III high-risk categories
    */
   private checkAnnexIIICategories(aiSystem: AISystem): {
@@ -181,11 +206,25 @@ export class RiskClassificationService {
     confidence: number;
     rationale: string;
   } {
-    const systemText = `${aiSystem.systemDescription} ${aiSystem.systemPurpose} ${aiSystem.intendedUse}`.toLowerCase();
+    const systemText = `${aiSystem.description} ${aiSystem.purpose} ${aiSystem.intendedUse || ''}`.toLowerCase();
     const detectedCategories: string[] = [];
     let totalConfidence = 0;
     let categoryCount = 0;
 
+    // Check if categories were explicitly selected in the intake form
+    if (aiSystem.categories && Array.isArray(aiSystem.categories)) {
+      for (const selectedCategory of aiSystem.categories) {
+        // Map frontend category IDs to our classification system
+        const mappedCategory = this.mapIntakeCategory(selectedCategory);
+        if (mappedCategory) {
+          detectedCategories.push(mappedCategory);
+          totalConfidence += 0.9; // High confidence for explicitly selected categories
+          categoryCount++;
+        }
+      }
+    }
+
+    // Additional text-based analysis
     for (const [key, category] of Object.entries(this.ANNEX_III_CATEGORIES)) {
       let categoryScore = 0;
       let matches = 0;
@@ -206,12 +245,13 @@ export class RiskClassificationService {
         }
       }
 
-      // Additional checks for specific categories
-      if (aiSystem.providesEssentialService && key === 'ESSENTIAL_SERVICES') {
-        categoryScore += 0.4;
+      // Additional checks using new database fields
+      if (aiSystem.providesEssentialService && category.id === 'annex_iii_5') {
+        categoryScore += 0.6; // High boost for essential services
       }
 
-      if (categoryScore >= 0.5) {
+      // Only add if not already detected from explicit selection and meets threshold
+      if (categoryScore >= 0.5 && !detectedCategories.includes(category.id)) {
         detectedCategories.push(category.id);
         totalConfidence += Math.min(categoryScore, 1);
         categoryCount++;
@@ -224,9 +264,9 @@ export class RiskClassificationService {
       categories: detectedCategories,
       confidence: avgConfidence,
       rationale: detectedCategories.length > 0
-        ? `System falls under Annex III high-risk categories: ${detectedCategories.map(id => 
+        ? `System has been classified as high-risk under Annex III of the EU AI Act. Detected categories: ${detectedCategories.map(id => 
             Object.values(this.ANNEX_III_CATEGORIES).find(c => c.id === id)?.name
-          ).join(', ')}`
+          ).filter(Boolean).join(', ')}`
         : ''
     };
   }
@@ -244,28 +284,28 @@ export class RiskClassificationService {
     const limitedRiskIndicators = [];
     
     // Check for AI systems that interact with humans
-    if (aiSystem.systemDescription.toLowerCase().includes('chatbot') ||
-        aiSystem.systemDescription.toLowerCase().includes('interaction') ||
-        aiSystem.systemDescription.toLowerCase().includes('assistant')) {
+    if (aiSystem.description.toLowerCase().includes('chatbot') ||
+        aiSystem.description.toLowerCase().includes('interaction') ||
+        aiSystem.description.toLowerCase().includes('assistant')) {
       limitedRiskIndicators.push('Human interaction system');
     }
 
     // Check for emotion recognition (non-prohibited contexts)
-    if (aiSystem.systemDescription.toLowerCase().includes('emotion') &&
-        !aiSystem.systemDescription.toLowerCase().includes('workplace') &&
-        !aiSystem.systemDescription.toLowerCase().includes('education')) {
+    if (aiSystem.description.toLowerCase().includes('emotion') &&
+        !aiSystem.description.toLowerCase().includes('workplace') &&
+        !aiSystem.description.toLowerCase().includes('education')) {
       limitedRiskIndicators.push('Emotion recognition system');
     }
 
     // Check for content generation
-    if (aiSystem.systemDescription.toLowerCase().includes('generate') ||
-        aiSystem.systemDescription.toLowerCase().includes('deepfake') ||
-        aiSystem.systemDescription.toLowerCase().includes('synthetic')) {
+    if (aiSystem.description.toLowerCase().includes('generate') ||
+        aiSystem.description.toLowerCase().includes('deepfake') ||
+        aiSystem.description.toLowerCase().includes('synthetic')) {
       limitedRiskIndicators.push('Content generation system');
     }
 
     // Check for GPAI systems
-    if (aiSystem.isGPAI || aiSystem.usesGPAI) {
+    if (aiSystem.gpaiFlag || aiSystem.usesGPAI) {
       limitedRiskIndicators.push('General-purpose AI system');
     }
 
@@ -273,7 +313,7 @@ export class RiskClassificationService {
       return {
         isLimited: true,
         confidence: 0.75,
-        rationale: `System has limited risk characteristics: ${limitedRiskIndicators.join(', ')}`,
+        rationale: `System has been classified as limited risk due to the following characteristics: ${limitedRiskIndicators.join(', ')}`,
         mitigations: [
           'Implement transparency obligations (Article 52)',
           'Inform users they are interacting with an AI system',
@@ -337,13 +377,13 @@ export class RiskClassificationService {
     ];
 
     // GPAI-specific recommendations
-    if (aiSystem.isGPAI) {
+    if (aiSystem.gpaiFlag || aiSystem.usesGPAI) {
       recommendations.push('Comply with GPAI model obligations (Chapter V)');
       recommendations.push('Conduct model evaluation if systemic risk threshold met');
     }
 
     // Actor-specific recommendations
-    switch (aiSystem.actorRole) {
+    switch (aiSystem.actorRole.toLowerCase()) {
       case 'provider':
         recommendations.push('Ensure CE marking before placing on market');
         recommendations.push('Draw up EU declaration of conformity');

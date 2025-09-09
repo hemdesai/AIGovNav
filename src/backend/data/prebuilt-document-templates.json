@@ -1,0 +1,286 @@
+[
+  {
+    "name": "Technical Documentation (Article 11)",
+    "category": "TECHNICAL_DOCUMENTATION",
+    "euActRequirement": "Article 11, Annex IV",
+    "description": "Comprehensive technical documentation template for high-risk AI systems per Article 11 and Annex IV requirements",
+    "templateContent": {
+      "title": "Technical Documentation for {{system.name}}",
+      "sections": [
+        {
+          "id": "1",
+          "title": "1. General Description of the AI System",
+          "requirements": "Annex IV, Section 1",
+          "content": "### System Overview\n\n**System Name:** {{system.name}}\n\n**System Description:** {{system.description}}\n\n**Intended Purpose:** {{system.purpose}}\n\n**Risk Classification:** {{system.riskLevel}}\n\n**Actor Role:** {{system.actorRole}}\n\n### Intended Use and Reasonably Foreseeable Misuse\n\n{{intendedUse}}\n\n**Potential Misuse Scenarios:**\n{{foreseenMisuse}}\n\n### General Characteristics of the AI System\n\n- **System Type:** {{systemType}}\n- **Deployment Context:** {{deploymentContext}}\n- **Geographic Scope:** {{geographicScope}}\n- **Target Users:** {{targetUsers}}"
+        },
+        {
+          "id": "2", 
+          "title": "2. Description of System Elements and Development Process",
+          "requirements": "Annex IV, Section 2",
+          "content": "### System Architecture\n\n{{systemArchitecture}}\n\n### Development Methodology\n\n{{developmentMethodology}}\n\n### Training, Validation and Testing Datasets\n\n**Data Types Used:** {{dataTypes}}\n\n**Data Sources:** {{dataSources}}\n\n**Data Governance Measures:** {{dataGovernance}}\n\n### Model Training Information\n\n{{trainingInformation}}\n\n### System Components and Dependencies\n\n{{systemComponents}}"
+        },
+        {
+          "id": "3",
+          "title": "3. Monitoring, Functioning and Control",
+          "requirements": "Annex IV, Section 3", 
+          "content": "### Performance Metrics\n\n{{performanceMetrics}}\n\n### Monitoring and Logging\n\n{{monitoringApproach}}\n\n### Human Oversight Measures\n\n{{humanOversight}}\n\n### Update and Modification Procedures\n\n{{updateProcedures}}\n\n### Quality Management System\n\n{{qualityManagement}}"
+        },
+        {
+          "id": "4",
+          "title": "4. Risk Management Documentation",
+          "requirements": "Article 9, Annex IV Section 4",
+          "content": "### Risk Assessment Methodology\n\n{{riskAssessmentMethod}}\n\n### Identified Risks\n\n{{identifiedRisks}}\n\n### Risk Mitigation Measures\n\n{{riskMitigation}}\n\n### Residual Risks\n\n{{residualRisks}}\n\n### Continuous Risk Monitoring\n\n{{riskMonitoring}}"
+        },
+        {
+          "id": "5",
+          "title": "5. Validation and Testing",
+          "requirements": "Annex IV, Section 5",
+          "content": "### Testing Strategy\n\n{{testingStrategy}}\n\n### Validation Results\n\n{{validationResults}}\n\n### Performance Benchmarks\n\n{{performanceBenchmarks}}\n\n### Robustness Testing\n\n{{robustnessTesting}}\n\n### Bias Testing and Mitigation\n\n{{biasTesting}}"
+        },
+        {
+          "id": "6",
+          "title": "6. EU Declaration of Conformity Information",
+          "requirements": "Article 48",
+          "content": "### Conformity Assessment Route\n\n{{conformityRoute}}\n\n**Applied Standards:** {{appliedStandards}}\n\n**Notified Body:** {{notifiedBody}}\n\n**Certificate Number:** {{certificateNumber}}\n\n**Declaration Date:** {{declarationDate}}"
+        }
+      ],
+      "annexVIIICompliance": {
+        "1a": "General description - Section 1",
+        "1b": "Intended purpose - Section 1", 
+        "1c": "Provider information - Header",
+        "2a": "Functioning description - Section 2",
+        "2b": "Main design choices - Section 2",
+        "2c": "System architecture - Section 2",
+        "3a": "Training data - Section 2",
+        "3b": "Data governance - Section 2", 
+        "4a": "Performance metrics - Section 3",
+        "4b": "Expected performance - Section 5",
+        "5a": "Risk management - Section 4",
+        "5b": "Testing procedures - Section 5"
+      }
+    },
+    "variables": [
+      {"name": "intendedUse", "description": "Detailed description of intended use cases", "type": "textarea"},
+      {"name": "foreseenMisuse", "description": "Description of reasonably foreseeable misuse", "type": "textarea"}, 
+      {"name": "systemType", "description": "Type of AI system (ML, deep learning, etc.)", "type": "text"},
+      {"name": "deploymentContext", "description": "Deployment environment details", "type": "textarea"},
+      {"name": "geographicScope", "description": "Geographic regions of deployment", "type": "text"},
+      {"name": "targetUsers", "description": "Description of target user groups", "type": "textarea"},
+      {"name": "systemArchitecture", "description": "Technical system architecture", "type": "textarea"},
+      {"name": "developmentMethodology", "description": "Development approach and methodology", "type": "textarea"},
+      {"name": "dataSources", "description": "Description of data sources used", "type": "textarea"},
+      {"name": "dataGovernance", "description": "Data governance and quality measures", "type": "textarea"}
+    ]
+  },
+  {
+    "name": "Instructions for Use Template",
+    "category": "INSTRUCTIONS_FOR_USE",
+    "euActRequirement": "Article 13",
+    "description": "User instructions template for high-risk AI systems per Article 13 transparency requirements",
+    "templateContent": {
+      "title": "Instructions for Use - {{system.name}}",
+      "sections": [
+        {
+          "id": "1",
+          "title": "1. Provider Information",
+          "content": "**Provider Name:** {{providerName}}\n\n**Contact Information:**\n- Address: {{providerAddress}}\n- Email: {{providerEmail}}\n- Phone: {{providerPhone}}\n- Website: {{providerWebsite}}\n\n**Authorized Representative (if applicable):** {{authorizedRep}}"
+        },
+        {
+          "id": "2", 
+          "title": "2. System Characteristics and Capabilities",
+          "content": "### System Purpose\n\n{{system.description}}\n\n### Key Capabilities\n\n{{systemCapabilities}}\n\n### Performance Characteristics\n\n{{performanceCharacteristics}}\n\n### Known Limitations\n\n{{knownLimitations}}\n\n### Accuracy Information\n\n{{accuracyInformation}}"
+        },
+        {
+          "id": "3",
+          "title": "3. Installation and Operating Conditions",
+          "content": "### Technical Requirements\n\n{{technicalRequirements}}\n\n### Installation Instructions\n\n{{installationInstructions}}\n\n### Operating Conditions\n\n{{operatingConditions}}\n\n### Environmental Requirements\n\n{{environmentalRequirements}}"
+        },
+        {
+          "id": "4",
+          "title": "4. Human Oversight Requirements",
+          "content": "### Human Oversight Measures\n\n{{humanOversightInstructions}}\n\n### When Human Intervention is Required\n\n{{interventionScenarios}}\n\n### How to Override System Decisions\n\n{{overrideInstructions}}\n\n### Monitoring Responsibilities\n\n{{monitoringResponsibilities}}"
+        },
+        {
+          "id": "5",
+          "title": "5. Maintenance and Support",
+          "content": "### Expected Lifetime\n\n{{expectedLifetime}}\n\n### Maintenance Requirements\n\n{{maintenanceRequirements}}\n\n### Update Procedures\n\n{{updateProcedures}}\n\n### Support Information\n\n{{supportInformation}}\n\n### End of Life Procedures\n\n{{endOfLifeProcedures}}"
+        }
+      ]
+    },
+    "variables": [
+      {"name": "providerName", "description": "Legal name of the AI system provider", "type": "text"},
+      {"name": "providerAddress", "description": "Provider business address", "type": "textarea"},
+      {"name": "providerEmail", "description": "Provider contact email", "type": "email"},
+      {"name": "systemCapabilities", "description": "Detailed system capabilities", "type": "textarea"},
+      {"name": "knownLimitations", "description": "Known system limitations", "type": "textarea"},
+      {"name": "accuracyInformation", "description": "System accuracy metrics and information", "type": "textarea"}
+    ]
+  },
+  {
+    "name": "Risk Management Documentation",
+    "category": "RISK_MANAGEMENT", 
+    "euActRequirement": "Article 9",
+    "description": "Risk management documentation template per Article 9 requirements",
+    "templateContent": {
+      "title": "Risk Management Documentation - {{system.name}}",
+      "sections": [
+        {
+          "id": "1",
+          "title": "1. Risk Management System Overview",
+          "content": "### Risk Management Framework\n\n{{riskFramework}}\n\n### Risk Management Process\n\nThis document describes the risk management process for {{system.name}}, implemented as a continuous iterative process throughout the system lifecycle.\n\n**Risk Assessment Date:** {{date.today}}\n\n**Risk Owner:** {{riskOwner}}\n\n**Review Frequency:** {{reviewFrequency}}"
+        },
+        {
+          "id": "2",
+          "title": "2. Risk Identification and Analysis", 
+          "content": "### Known and Reasonably Foreseeable Risks\n\n{{knownRisks}}\n\n### Risks from Intended Use\n\n{{intendedUseRisks}}\n\n### Risks from Reasonably Foreseeable Misuse\n\n{{misuseRisks}}\n\n### Risks from Interaction with Other Systems\n\n{{systemInteractionRisks}}"
+        },
+        {
+          "id": "3",
+          "title": "3. Risk Evaluation and Assessment",
+          "content": "### Risk Assessment Methodology\n\n{{assessmentMethodology}}\n\n### Risk Matrix\n\n| Risk ID | Description | Likelihood | Impact | Risk Level | Mitigation Status |\n|---------|-------------|------------|--------|------------|-------------------|\n{{riskMatrix}}\n\n### Risk Evaluation Criteria\n\n{{evaluationCriteria}}"
+        },
+        {
+          "id": "4", 
+          "title": "4. Risk Mitigation Measures",
+          "content": "### Implemented Risk Controls\n\n{{implementedControls}}\n\n### Design and Development Measures\n\n{{designMeasures}}\n\n### Technical Measures\n\n{{technicalMeasures}}\n\n### Organizational Measures\n\n{{organizationalMeasures}}"
+        },
+        {
+          "id": "5",
+          "title": "5. Residual Risk Assessment",
+          "content": "### Residual Risks After Mitigation\n\n{{residualRisks}}\n\n### Acceptability Assessment\n\n{{acceptabilityAssessment}}\n\n### Ongoing Risk Monitoring\n\n{{riskMonitoring}}\n\n### Risk Communication\n\n{{riskCommunication}}"
+        }
+      ]
+    },
+    "variables": [
+      {"name": "riskFramework", "description": "Risk management framework used", "type": "textarea"},
+      {"name": "riskOwner", "description": "Person responsible for risk management", "type": "text"},
+      {"name": "reviewFrequency", "description": "How often risks are reviewed", "type": "text"},
+      {"name": "knownRisks", "description": "List of known risks", "type": "textarea"},
+      {"name": "assessmentMethodology", "description": "Risk assessment methodology", "type": "textarea"}
+    ]
+  },
+  {
+    "name": "EU Declaration of Conformity",
+    "category": "CONFORMITY_DECLARATION",
+    "euActRequirement": "Article 48",
+    "description": "EU Declaration of Conformity template for high-risk AI systems",
+    "templateContent": {
+      "title": "EU Declaration of Conformity",
+      "sections": [
+        {
+          "id": "1",
+          "title": "Declaration of Conformity",
+          "content": "We, {{providerName}}, with registered address at {{providerAddress}}, declare under our sole responsibility that the AI system described below is in conformity with the relevant requirements of Regulation (EU) 2024/1689 (AI Act).\n\n**AI System:** {{system.name}}\n\n**Description:** {{system.description}}\n\n**Intended Purpose:** {{system.purpose}}\n\n**Risk Classification:** {{system.riskLevel}}"
+        },
+        {
+          "id": "2",
+          "title": "Applicable Requirements",
+          "content": "This declaration of conformity is issued in respect of the following requirements:\n\n### EU AI Act Requirements\n\n{{applicableRequirements}}\n\n### Harmonised Standards Applied\n\n{{harmonisedStandards}}\n\n### Other Technical Specifications\n\n{{technicalSpecifications}}"
+        },
+        {
+          "id": "3",
+          "title": "Conformity Assessment Procedure",
+          "content": "### Assessment Route\n\n{{conformityRoute}}\n\n### Notified Body (if applicable)\n\n{{notifiedBody}}\n\n**Notified Body Number:** {{notifiedBodyNumber}}\n\n**Certificate Number:** {{certificateNumber}}\n\n**Certificate Date:** {{certificateDate}}"
+        },
+        {
+          "id": "4",
+          "title": "Additional Information",
+          "content": "### Authorized Representative (if applicable)\n\n{{authorizedRepresentative}}\n\n### Person Authorized to Sign\n\n**Name:** {{signatoryName}}\n\n**Position:** {{signatoryPosition}}\n\n**Location:** {{signatureLocation}}\n\n**Date:** {{date.today}}\n\n**Signature:** ________________"
+        }
+      ]
+    },
+    "variables": [
+      {"name": "providerName", "description": "Legal name of provider", "type": "text"},
+      {"name": "providerAddress", "description": "Provider registered address", "type": "textarea"},
+      {"name": "applicableRequirements", "description": "List of applicable AI Act requirements", "type": "textarea"},
+      {"name": "conformityRoute", "description": "Conformity assessment procedure used", "type": "text"},
+      {"name": "signatoryName", "description": "Name of person signing declaration", "type": "text"}
+    ]
+  },
+  {
+    "name": "GPAI Model Documentation",
+    "category": "GPAI_MODEL_CARD",
+    "euActRequirement": "Article 53",
+    "description": "General Purpose AI model documentation and model card template",
+    "templateContent": {
+      "title": "GPAI Model Documentation - {{system.name}}",
+      "sections": [
+        {
+          "id": "1",
+          "title": "1. Model Overview",
+          "content": "### Model Information\n\n**Model Name:** {{system.name}}\n\n**Model Version:** {{modelVersion}}\n\n**Model Type:** {{modelType}}\n\n**Architecture:** {{modelArchitecture}}\n\n**Parameters:** {{parameterCount}}\n\n**Training Compute:** {{trainingCompute}} FLOPS\n\n### Intended Use\n\n{{system.purpose}}\n\n### Model Capabilities\n\n{{modelCapabilities}}\n\n### Known Limitations\n\n{{modelLimitations}}"
+        },
+        {
+          "id": "2",
+          "title": "2. Training Data Summary",
+          "content": "### Data Sources\n\n{{dataSources}}\n\n### Data Governance\n\n{{dataGovernance}}\n\n### Data Volume\n\n**Total Training Tokens:** {{trainingTokens}}\n\n**Dataset Size:** {{datasetSize}}\n\n### Data Quality Measures\n\n{{dataQualityMeasures}}\n\n### Copyright and Licensing\n\n{{copyrightInfo}}"
+        },
+        {
+          "id": "3",
+          "title": "3. Model Training and Evaluation",
+          "content": "### Training Methodology\n\n{{trainingMethodology}}\n\n### Evaluation Results\n\n{{evaluationResults}}\n\n### Benchmark Performance\n\n{{benchmarkPerformance}}\n\n### Safety Evaluations\n\n{{safetyEvaluations}}"
+        },
+        {
+          "id": "4",
+          "title": "4. Systemic Risk Assessment",
+          "content": "### Risk Assessment (>10^25 FLOPS)\n\n{{systemicRiskAssessment}}\n\n### Adversarial Testing\n\n{{adversarialTesting}}\n\n### Red Teaming Results\n\n{{redTeamingResults}}\n\n### Risk Mitigation Measures\n\n{{riskMitigationMeasures}}"
+        },
+        {
+          "id": "5",
+          "title": "5. Model Deployment and Monitoring",
+          "content": "### Deployment Guidelines\n\n{{deploymentGuidelines}}\n\n### Monitoring Requirements\n\n{{monitoringRequirements}}\n\n### Update Procedures\n\n{{updateProcedures}}\n\n### Incident Response\n\n{{incidentResponse}}"
+        }
+      ]
+    },
+    "variables": [
+      {"name": "modelVersion", "description": "Model version number", "type": "text"},
+      {"name": "modelArchitecture", "description": "Model architecture details", "type": "textarea"},
+      {"name": "parameterCount", "description": "Number of model parameters", "type": "text"},
+      {"name": "trainingCompute", "description": "Training compute in FLOPS", "type": "text"},
+      {"name": "dataSources", "description": "Summary of training data sources", "type": "textarea"}
+    ]
+  },
+  {
+    "name": "Fundamental Rights Impact Assessment",
+    "category": "IMPACT_ASSESSMENT",
+    "euActRequirement": "Article 27",
+    "description": "Fundamental rights impact assessment template for AI system deployers",
+    "templateContent": {
+      "title": "Fundamental Rights Impact Assessment - {{system.name}}",
+      "sections": [
+        {
+          "id": "1",
+          "title": "1. Assessment Overview",
+          "content": "### AI System Information\n\n**System Name:** {{system.name}}\n\n**Deployer:** {{deployerName}}\n\n**Deployment Context:** {{deploymentContext}}\n\n**Assessment Date:** {{date.today}}\n\n**Assessor:** {{assessorName}}\n\n### Scope of Assessment\n\n{{assessmentScope}}"
+        },
+        {
+          "id": "2",
+          "title": "2. Fundamental Rights Analysis",
+          "content": "### Right to Privacy and Data Protection\n\n**Impact Assessment:** {{privacyImpact}}\n\n**Mitigation Measures:** {{privacyMitigation}}\n\n### Right to Non-Discrimination\n\n**Impact Assessment:** {{discriminationImpact}}\n\n**Mitigation Measures:** {{discriminationMitigation}}\n\n### Freedom of Expression and Information\n\n**Impact Assessment:** {{expressionImpact}}\n\n**Mitigation Measures:** {{expressionMitigation}}\n\n### Right to Human Dignity\n\n**Impact Assessment:** {{dignityImpact}}\n\n**Mitigation Measures:** {{dignityMitigation}}"
+        },
+        {
+          "id": "3",
+          "title": "3. Stakeholder Consultation",
+          "content": "### Consultation Process\n\n{{consultationProcess}}\n\n### Stakeholder Feedback\n\n{{stakeholderFeedback}}\n\n### Concerns Raised\n\n{{concernsRaised}}\n\n### Response to Concerns\n\n{{concernResponse}}"
+        },
+        {
+          "id": "4",
+          "title": "4. Risk Assessment and Mitigation",
+          "content": "### Identified Risks to Fundamental Rights\n\n{{identifiedRisks}}\n\n### Risk Mitigation Strategy\n\n{{mitigationStrategy}}\n\n### Monitoring and Review Plan\n\n{{monitoringPlan}}\n\n### Remedial Actions\n\n{{remedialActions}}"
+        },
+        {
+          "id": "5",
+          "title": "5. Conclusions and Recommendations",
+          "content": "### Overall Assessment\n\n{{overallAssessment}}\n\n### Recommendations\n\n{{recommendations}}\n\n### Approval Decision\n\n{{approvalDecision}}\n\n### Review Schedule\n\n{{reviewSchedule}}"
+        }
+      ]
+    },
+    "variables": [
+      {"name": "deployerName", "description": "Name of the AI system deployer", "type": "text"},
+      {"name": "assessorName", "description": "Name of the person conducting the assessment", "type": "text"},
+      {"name": "assessmentScope", "description": "Scope and boundaries of the assessment", "type": "textarea"},
+      {"name": "privacyImpact", "description": "Assessment of privacy impact", "type": "textarea"},
+      {"name": "discriminationImpact", "description": "Assessment of discrimination risks", "type": "textarea"}
+    ]
+  }
+]

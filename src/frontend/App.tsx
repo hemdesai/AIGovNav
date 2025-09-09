@@ -11,6 +11,7 @@ import { IntakeSuccess } from './pages/IntakeSuccess';
 import { Registry } from './pages/Registry';
 import { SystemDetails } from './pages/SystemDetails';
 import { PolicyPacks } from './pages/PolicyPacks';
+import { PolicyPackDetail } from './pages/PolicyPackDetail';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
 import { Profile } from './pages/Profile';
@@ -37,6 +38,7 @@ function App() {
             <Route path="registry" element={<Registry />} />
             <Route path="systems/:id" element={<SystemDetails />} />
             <Route path="policy-packs" element={<PolicyPacks />} />
+            <Route path="policy-packs/:id" element={<PolicyPackDetail />} />
             <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>

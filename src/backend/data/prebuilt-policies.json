@@ -1,0 +1,681 @@
+[
+  {
+    "name": "Prohibited AI Systems Policy",
+    "category": "PROHIBITED_AI",
+    "euActArticle": "Article 5",
+    "description": "Policy prohibiting AI systems that pose unacceptable risks to fundamental rights",
+    "purpose": "To ensure compliance with Article 5 of the EU AI Act by prohibiting AI systems that manipulate human behavior through subliminal techniques or exploit vulnerabilities",
+    "scope": "All AI systems developed, deployed, or used within the organization",
+    "content": {
+      "sections": [
+        {
+          "title": "Prohibited Practices",
+          "content": "The following AI practices are strictly prohibited:\n1. AI systems that deploy subliminal techniques beyond a person's consciousness\n2. Systems exploiting vulnerabilities of specific groups due to age, disability, or social/economic circumstances\n3. Biometric categorisation systems that infer race, political opinions, trade union membership, religious beliefs, or sexual orientation\n4. Real-time remote biometric identification in public spaces (with limited exceptions)\n5. AI systems for social scoring by public authorities\n6. Emotion recognition in workplace and educational institutions (with exceptions)"
+        }
+      ]
+    },
+    "responsibilities": [
+      {
+        "role": "AI Development Team",
+        "tasks": ["Assess all AI systems against prohibited practices", "Implement safeguards to prevent prohibited uses"]
+      },
+      {
+        "role": "Legal Team",
+        "tasks": ["Review and approve all AI systems for Article 5 compliance", "Monitor regulatory changes"]
+      }
+    ],
+    "procedures": [
+      {
+        "step": 1,
+        "action": "Pre-development assessment",
+        "description": "Review AI system concept against prohibited practices checklist"
+      },
+      {
+        "step": 2,
+        "action": "Design review",
+        "description": "Ensure system design prevents any prohibited functionalities"
+      },
+      {
+        "step": 3,
+        "action": "Pre-deployment verification",
+        "description": "Final check that deployed system cannot perform prohibited practices"
+      }
+    ],
+    "controls": [
+      {
+        "code": "PRO-001",
+        "name": "Prohibited Practices Assessment",
+        "description": "Mandatory assessment of all AI systems against Article 5 prohibited practices",
+        "category": "PROHIBITED_AI",
+        "implementationGuide": "Create checklist of all prohibited practices and require sign-off before development begins",
+        "evidenceRequirements": ["Completed assessment form", "Legal team approval", "System design documentation"],
+        "controlType": "MANUAL",
+        "priority": "CRITICAL",
+        "implementationEffort": "MEDIUM"
+      },
+      {
+        "code": "PRO-002",
+        "name": "Subliminal Technique Prevention",
+        "description": "Technical controls to prevent subliminal manipulation techniques",
+        "category": "PROHIBITED_AI",
+        "implementationGuide": "Implement code review processes and automated testing to detect subliminal technique implementations",
+        "evidenceRequirements": ["Code review logs", "Test results", "Technical documentation"],
+        "controlType": "AUTOMATED",
+        "priority": "CRITICAL",
+        "implementationEffort": "HIGH"
+      }
+    ]
+  },
+  {
+    "name": "Risk Management System Policy",
+    "category": "RISK_MANAGEMENT",
+    "euActArticle": "Article 9",
+    "description": "Comprehensive risk management system for high-risk AI systems",
+    "purpose": "To establish and maintain a risk management system throughout the AI system lifecycle",
+    "scope": "All high-risk AI systems as defined in Annex III",
+    "content": {
+      "sections": [
+        {
+          "title": "Risk Management Process",
+          "content": "Risk management shall be understood as a continuous iterative process throughout the entire lifecycle of a high-risk AI system, requiring regular systematic updating."
+        },
+        {
+          "title": "Risk Assessment Requirements",
+          "content": "The risk management system shall:\n1. Identify and analyze known and reasonably foreseeable risks\n2. Estimate and evaluate risks from intended use and misuse\n3. Evaluate risks from other AI systems or tools\n4. Assess residual risks after implementation of risk mitigation measures"
+        }
+      ]
+    },
+    "responsibilities": [
+      {
+        "role": "Risk Manager",
+        "tasks": ["Oversee risk management process", "Approve risk assessments", "Monitor residual risks"]
+      },
+      {
+        "role": "AI System Owner",
+        "tasks": ["Implement risk mitigation measures", "Report new risks", "Maintain risk documentation"]
+      }
+    ],
+    "procedures": [
+      {
+        "step": 1,
+        "action": "Risk identification",
+        "description": "Systematically identify all potential risks from intended use and reasonably foreseeable misuse"
+      },
+      {
+        "step": 2,
+        "action": "Risk analysis",
+        "description": "Analyze probability and severity of identified risks"
+      },
+      {
+        "step": 3,
+        "action": "Risk evaluation",
+        "description": "Determine acceptability of risks and need for mitigation"
+      },
+      {
+        "step": 4,
+        "action": "Risk mitigation",
+        "description": "Implement appropriate measures to eliminate or reduce risks to acceptable levels"
+      }
+    ],
+    "controls": [
+      {
+        "code": "RMS-001",
+        "name": "Continuous Risk Assessment",
+        "description": "Ongoing identification and assessment of risks throughout AI system lifecycle",
+        "category": "RISK_MANAGEMENT",
+        "implementationGuide": "Establish quarterly risk reviews with documented assessment methodology",
+        "evidenceRequirements": ["Risk register", "Assessment reports", "Mitigation plans"],
+        "controlType": "MANUAL",
+        "priority": "HIGH",
+        "implementationEffort": "HIGH"
+      },
+      {
+        "code": "RMS-002",
+        "name": "Residual Risk Monitoring",
+        "description": "Continuous monitoring of residual risks after mitigation implementation",
+        "category": "RISK_MANAGEMENT",
+        "implementationGuide": "Set up automated monitoring dashboards for key risk indicators",
+        "evidenceRequirements": ["Monitoring logs", "Alert records", "Risk trend analysis"],
+        "controlType": "AUTOMATED",
+        "priority": "HIGH",
+        "implementationEffort": "MEDIUM"
+      }
+    ]
+  },
+  {
+    "name": "Data Governance and Management Policy",
+    "category": "DATA_GOVERNANCE",
+    "euActArticle": "Article 10",
+    "description": "Data governance and management practices for AI systems",
+    "purpose": "To ensure high quality training, validation and testing data sets for AI systems",
+    "scope": "All data used in AI system development, training, and operation",
+    "content": {
+      "sections": [
+        {
+          "title": "Data Quality Requirements",
+          "content": "Training, validation and testing data sets shall be:\n1. Subject to appropriate data governance and management practices\n2. Relevant, representative, and free of errors\n3. Complete and up-to-date\n4. Have appropriate statistical properties"
+        },
+        {
+          "title": "Bias Detection and Mitigation",
+          "content": "Data sets shall be examined for possible biases that are likely to affect the health and safety of persons, have a negative impact on fundamental rights, or lead to discrimination."
+        }
+      ]
+    },
+    "responsibilities": [
+      {
+        "role": "Data Governance Team",
+        "tasks": ["Establish data quality standards", "Implement bias detection processes", "Maintain data lineage"]
+      },
+      {
+        "role": "Data Scientists",
+        "tasks": ["Apply data quality checks", "Document data sources", "Report data quality issues"]
+      }
+    ],
+    "procedures": [
+      {
+        "step": 1,
+        "action": "Data source validation",
+        "description": "Verify reliability and appropriateness of all data sources"
+      },
+      {
+        "step": 2,
+        "action": "Data quality assessment",
+        "description": "Apply statistical analysis to ensure data meets quality requirements"
+      },
+      {
+        "step": 3,
+        "action": "Bias detection",
+        "description": "Use automated and manual techniques to identify potential biases"
+      },
+      {
+        "step": 4,
+        "action": "Data documentation",
+        "description": "Create comprehensive data lineage and quality documentation"
+      }
+    ],
+    "controls": [
+      {
+        "code": "DGM-001",
+        "name": "Data Quality Validation",
+        "description": "Automated validation of data quality metrics before use in AI training",
+        "category": "DATA_GOVERNANCE",
+        "implementationGuide": "Implement data quality pipelines with automated validation checks",
+        "evidenceRequirements": ["Data quality reports", "Validation logs", "Quality metrics"],
+        "controlType": "AUTOMATED",
+        "priority": "HIGH",
+        "implementationEffort": "HIGH"
+      },
+      {
+        "code": "DGM-002",
+        "name": "Bias Detection and Mitigation",
+        "description": "Regular assessment and mitigation of biases in training data",
+        "category": "DATA_GOVERNANCE",
+        "implementationGuide": "Deploy bias detection algorithms and establish bias mitigation procedures",
+        "evidenceRequirements": ["Bias assessment reports", "Mitigation actions", "Diverse dataset documentation"],
+        "controlType": "HYBRID",
+        "priority": "CRITICAL",
+        "implementationEffort": "HIGH"
+      }
+    ]
+  },
+  {
+    "name": "Technical Documentation Standards",
+    "category": "TECHNICAL_DOCUMENTATION",
+    "euActArticle": "Article 11",
+    "description": "Technical documentation requirements for high-risk AI systems",
+    "purpose": "To ensure comprehensive technical documentation is maintained for all high-risk AI systems",
+    "scope": "All high-risk AI systems requiring technical documentation per Article 11",
+    "content": {
+      "sections": [
+        {
+          "title": "Documentation Requirements",
+          "content": "Technical documentation shall contain at minimum:\n1. General description of the AI system\n2. Detailed description of system elements and development process\n3. Information about monitoring, functioning and control\n4. Risk management documentation\n5. Changes made to the system through its lifecycle"
+        },
+        {
+          "title": "Documentation Maintenance",
+          "content": "Documentation shall be kept up-to-date and made available to national competent authorities upon request."
+        }
+      ]
+    },
+    "responsibilities": [
+      {
+        "role": "Technical Writing Team",
+        "tasks": ["Create and maintain technical documentation", "Ensure documentation completeness", "Update documentation for system changes"]
+      },
+      {
+        "role": "Development Team",
+        "tasks": ["Provide technical details", "Document system changes", "Review documentation accuracy"]
+      }
+    ],
+    "procedures": [
+      {
+        "step": 1,
+        "action": "Documentation planning",
+        "description": "Define documentation requirements and structure per Annex IV"
+      },
+      {
+        "step": 2,
+        "action": "Documentation creation",
+        "description": "Create comprehensive technical documentation covering all required elements"
+      },
+      {
+        "step": 3,
+        "action": "Documentation review",
+        "description": "Review documentation for completeness and accuracy"
+      },
+      {
+        "step": 4,
+        "action": "Documentation maintenance",
+        "description": "Keep documentation current with system changes and updates"
+      }
+    ],
+    "controls": [
+      {
+        "code": "TDS-001",
+        "name": "Comprehensive Documentation Coverage",
+        "description": "Ensure all Annex IV requirements are covered in technical documentation",
+        "category": "TECHNICAL_DOCUMENTATION",
+        "implementationGuide": "Use Annex IV checklist to verify all required elements are documented",
+        "evidenceRequirements": ["Completed Annex IV checklist", "Technical documentation", "Review reports"],
+        "controlType": "MANUAL",
+        "priority": "HIGH",
+        "implementationEffort": "HIGH"
+      },
+      {
+        "code": "TDS-002",
+        "name": "Documentation Version Control",
+        "description": "Maintain version control and change tracking for all technical documentation",
+        "category": "TECHNICAL_DOCUMENTATION",
+        "implementationGuide": "Implement document management system with version control and audit trails",
+        "evidenceRequirements": ["Version history", "Change logs", "Approval records"],
+        "controlType": "AUTOMATED",
+        "priority": "MEDIUM",
+        "implementationEffort": "MEDIUM"
+      }
+    ]
+  },
+  {
+    "name": "Record Keeping and Logging Policy",
+    "category": "RECORD_KEEPING",
+    "euActArticle": "Article 12",
+    "description": "Record keeping requirements for high-risk AI systems",
+    "purpose": "To ensure automatic recording of events during AI system operation",
+    "scope": "All high-risk AI systems capable of automatic logging",
+    "content": {
+      "sections": [
+        {
+          "title": "Logging Requirements",
+          "content": "High-risk AI systems shall be designed to automatically record events ('logs') during operation to:\n1. Ensure traceability of system functioning\n2. Enable monitoring of system operation\n3. Support incident investigation\n4. Demonstrate compliance with requirements"
+        },
+        {
+          "title": "Log Content and Retention",
+          "content": "Logs shall be accurate, complete, and retained for appropriate periods based on the intended purpose of the AI system."
+        }
+      ]
+    },
+    "responsibilities": [
+      {
+        "role": "System Administrators",
+        "tasks": ["Configure logging systems", "Monitor log storage", "Ensure log integrity"]
+      },
+      {
+        "role": "Compliance Team",
+        "tasks": ["Define retention periods", "Audit logging completeness", "Handle regulatory requests"]
+      }
+    ],
+    "procedures": [
+      {
+        "step": 1,
+        "action": "Logging design",
+        "description": "Design comprehensive logging architecture for all AI system events"
+      },
+      {
+        "step": 2,
+        "action": "Log implementation",
+        "description": "Implement automated logging with appropriate detail level"
+      },
+      {
+        "step": 3,
+        "action": "Log monitoring",
+        "description": "Monitor log quality and completeness regularly"
+      },
+      {
+        "step": 4,
+        "action": "Log retention",
+        "description": "Implement appropriate retention and archival policies"
+      }
+    ],
+    "controls": [
+      {
+        "code": "RKL-001",
+        "name": "Comprehensive Event Logging",
+        "description": "Automatic logging of all significant AI system events and decisions",
+        "category": "RECORD_KEEPING",
+        "implementationGuide": "Configure systems to log all events required for traceability and monitoring",
+        "evidenceRequirements": ["Log configuration", "Sample logs", "Logging completeness reports"],
+        "controlType": "AUTOMATED",
+        "priority": "HIGH",
+        "implementationEffort": "MEDIUM"
+      },
+      {
+        "code": "RKL-002",
+        "name": "Log Integrity and Security",
+        "description": "Protection of logs from tampering and unauthorized access",
+        "category": "RECORD_KEEPING",
+        "implementationGuide": "Implement cryptographic protection and access controls for log systems",
+        "evidenceRequirements": ["Access control logs", "Integrity verification", "Security audit reports"],
+        "controlType": "AUTOMATED",
+        "priority": "HIGH",
+        "implementationEffort": "HIGH"
+      }
+    ]
+  },
+  {
+    "name": "Transparency and User Information Policy",
+    "category": "TRANSPARENCY",
+    "euActArticle": "Article 13",
+    "description": "Transparency obligations and information to users and deployers",
+    "purpose": "To ensure users are adequately informed about AI system capabilities and limitations",
+    "scope": "All AI systems interacting with users or requiring user information",
+    "content": {
+      "sections": [
+        {
+          "title": "Information Requirements",
+          "content": "High-risk AI systems shall be accompanied by instructions for use that include:\n1. Identity and contact details of the provider\n2. Characteristics, capabilities and limitations of performance\n3. Measures for human oversight\n4. Expected lifetime and necessary maintenance\n5. Installation and operating conditions"
+        },
+        {
+          "title": "User Disclosure",
+          "content": "Users shall be informed that they are interacting with an AI system, unless this is obvious from the circumstances."
+        }
+      ]
+    },
+    "responsibilities": [
+      {
+        "role": "Product Team",
+        "tasks": ["Create user instructions", "Design transparency notices", "Maintain user documentation"]
+      },
+      {
+        "role": "UX/UI Team",
+        "tasks": ["Design clear AI disclosure interfaces", "Test user comprehension", "Ensure accessibility"]
+      }
+    ],
+    "procedures": [
+      {
+        "step": 1,
+        "action": "Information compilation",
+        "description": "Compile all required information about the AI system for users"
+      },
+      {
+        "step": 2,
+        "action": "Documentation creation",
+        "description": "Create clear, understandable instructions for use"
+      },
+      {
+        "step": 3,
+        "action": "Disclosure implementation",
+        "description": "Implement appropriate AI disclosure mechanisms in user interfaces"
+      },
+      {
+        "step": 4,
+        "action": "User testing",
+        "description": "Test user understanding and effectiveness of transparency measures"
+      }
+    ],
+    "controls": [
+      {
+        "code": "TUI-001",
+        "name": "Clear AI System Disclosure",
+        "description": "Prominent disclosure when users are interacting with AI systems",
+        "category": "TRANSPARENCY",
+        "implementationGuide": "Implement clear, prominent notifications in all user interfaces",
+        "evidenceRequirements": ["Interface screenshots", "User testing results", "Accessibility reports"],
+        "controlType": "MANUAL",
+        "priority": "HIGH",
+        "implementationEffort": "LOW"
+      },
+      {
+        "code": "TUI-002",
+        "name": "Comprehensive User Instructions",
+        "description": "Detailed instructions for use covering all Article 13 requirements",
+        "category": "TRANSPARENCY",
+        "implementationGuide": "Create comprehensive user manuals following Article 13 checklist",
+        "evidenceRequirements": ["User manuals", "Instruction completeness checklist", "User feedback"],
+        "controlType": "MANUAL",
+        "priority": "MEDIUM",
+        "implementationEffort": "MEDIUM"
+      }
+    ]
+  },
+  {
+    "name": "Human Oversight Policy",
+    "category": "HUMAN_OVERSIGHT",
+    "euActArticle": "Article 14",
+    "description": "Human oversight requirements for high-risk AI systems",
+    "purpose": "To ensure effective human oversight of high-risk AI system operation",
+    "scope": "All high-risk AI systems requiring human oversight capabilities",
+    "content": {
+      "sections": [
+        {
+          "title": "Oversight Requirements",
+          "content": "High-risk AI systems shall be designed to enable human oversight through:\n1. Humans understanding system output and being able to interpret it\n2. Humans being aware of system limitations\n3. Humans being able to monitor system operation\n4. Humans being able to intervene or interrupt system operation"
+        },
+        {
+          "title": "Oversight Measures",
+          "content": "Human oversight shall be ensured through one or both of the following types of measures:\n1. Human-in-the-loop: human intervention in each decision cycle\n2. Human-on-the-loop: human intervention during system design and monitoring"
+        }
+      ]
+    },
+    "responsibilities": [
+      {
+        "role": "Human Oversight Officers",
+        "tasks": ["Monitor AI system operations", "Intervene when necessary", "Document oversight actions"]
+      },
+      {
+        "role": "System Designers",
+        "tasks": ["Design oversight interfaces", "Implement intervention mechanisms", "Train oversight personnel"]
+      }
+    ],
+    "procedures": [
+      {
+        "step": 1,
+        "action": "Oversight design",
+        "description": "Design appropriate human oversight mechanisms for the AI system"
+      },
+      {
+        "step": 2,
+        "action": "Interface implementation",
+        "description": "Implement user interfaces that enable effective oversight"
+      },
+      {
+        "step": 3,
+        "action": "Training program",
+        "description": "Train designated personnel on oversight responsibilities and procedures"
+      },
+      {
+        "step": 4,
+        "action": "Oversight monitoring",
+        "description": "Monitor effectiveness of human oversight measures"
+      }
+    ],
+    "controls": [
+      {
+        "code": "HOP-001",
+        "name": "Override and Intervention Capability",
+        "description": "Technical capability for humans to override or stop AI system decisions",
+        "category": "HUMAN_OVERSIGHT",
+        "implementationGuide": "Implement emergency stop and manual override functions in all high-risk systems",
+        "evidenceRequirements": ["System architecture documentation", "Override test results", "Training records"],
+        "controlType": "MANUAL",
+        "priority": "CRITICAL",
+        "implementationEffort": "HIGH"
+      },
+      {
+        "code": "HOP-002",
+        "name": "Oversight Training and Competence",
+        "description": "Ensure human overseers are properly trained and competent",
+        "category": "HUMAN_OVERSIGHT",
+        "implementationGuide": "Develop comprehensive training programs and competency assessments",
+        "evidenceRequirements": ["Training curricula", "Competency assessments", "Certification records"],
+        "controlType": "MANUAL",
+        "priority": "HIGH",
+        "implementationEffort": "MEDIUM"
+      }
+    ]
+  },
+  {
+    "name": "Accuracy, Robustness and Cybersecurity Policy",
+    "category": "CYBERSECURITY",
+    "euActArticle": "Article 15",
+    "description": "Requirements for accuracy, robustness and cybersecurity of AI systems",
+    "purpose": "To ensure AI systems achieve appropriate levels of accuracy, robustness and cybersecurity",
+    "scope": "All high-risk AI systems throughout their lifecycle",
+    "content": {
+      "sections": [
+        {
+          "title": "Accuracy Requirements",
+          "content": "High-risk AI systems shall achieve an appropriate level of accuracy in relation to their intended purpose and be resilient against errors, faults or inconsistencies."
+        },
+        {
+          "title": "Robustness Requirements",
+          "content": "AI systems shall be robust against attempts to alter their use or performance by exploiting system vulnerabilities."
+        },
+        {
+          "title": "Cybersecurity Requirements",
+          "content": "AI systems shall be secure against cybersecurity threats throughout their lifecycle."
+        }
+      ]
+    },
+    "responsibilities": [
+      {
+        "role": "Security Team",
+        "tasks": ["Implement cybersecurity measures", "Conduct security assessments", "Monitor security threats"]
+      },
+      {
+        "role": "Quality Assurance",
+        "tasks": ["Test system accuracy", "Validate robustness", "Document performance metrics"]
+      }
+    ],
+    "procedures": [
+      {
+        "step": 1,
+        "action": "Performance baseline",
+        "description": "Establish accuracy and performance baselines for the AI system"
+      },
+      {
+        "step": 2,
+        "action": "Robustness testing",
+        "description": "Conduct comprehensive testing against various failure modes and attacks"
+      },
+      {
+        "step": 3,
+        "action": "Security implementation",
+        "description": "Implement comprehensive cybersecurity controls throughout system lifecycle"
+      },
+      {
+        "step": 4,
+        "action": "Continuous monitoring",
+        "description": "Monitor accuracy, robustness and security on an ongoing basis"
+      }
+    ],
+    "controls": [
+      {
+        "code": "ARC-001",
+        "name": "Accuracy Performance Monitoring",
+        "description": "Continuous monitoring of AI system accuracy against established baselines",
+        "category": "CYBERSECURITY",
+        "implementationGuide": "Implement automated accuracy monitoring with alerting for degradation",
+        "evidenceRequirements": ["Performance baselines", "Monitoring reports", "Accuracy trends"],
+        "controlType": "AUTOMATED",
+        "priority": "HIGH",
+        "implementationEffort": "MEDIUM"
+      },
+      {
+        "code": "ARC-002",
+        "name": "Adversarial Robustness Testing",
+        "description": "Regular testing of AI system robustness against adversarial attacks",
+        "category": "CYBERSECURITY",
+        "implementationGuide": "Conduct quarterly adversarial testing using established attack methodologies",
+        "evidenceRequirements": ["Test plans", "Attack simulation results", "Remediation actions"],
+        "controlType": "MANUAL",
+        "priority": "HIGH",
+        "implementationEffort": "HIGH"
+      }
+    ]
+  },
+  {
+    "name": "GPAI Model Documentation Policy",
+    "category": "GPAI_MODEL",
+    "euActArticle": "Article 53",
+    "description": "Documentation obligations for General Purpose AI models",
+    "purpose": "To ensure proper documentation of GPAI models and their capabilities",
+    "scope": "All General Purpose AI models developed or used by the organization",
+    "content": {
+      "sections": [
+        {
+          "title": "Model Documentation",
+          "content": "GPAI model providers shall prepare and maintain comprehensive documentation including:\n1. Model training methodology\n2. Data sources and processing\n3. Model architecture and parameters\n4. Capabilities and limitations\n5. Safety and security measures"
+        },
+        {
+          "title": "Public Summary",
+          "content": "Providers shall prepare a summary of training data sources and make it publicly available."
+        }
+      ]
+    },
+    "responsibilities": [
+      {
+        "role": "GPAI Model Team",
+        "tasks": ["Create model documentation", "Maintain training data summaries", "Update model cards"]
+      },
+      {
+        "role": "Legal Team",
+        "tasks": ["Review public summaries", "Ensure IP compliance", "Handle disclosure requirements"]
+      }
+    ],
+    "procedures": [
+      {
+        "step": 1,
+        "action": "Documentation planning",
+        "description": "Plan comprehensive documentation requirements for GPAI models"
+      },
+      {
+        "step": 2,
+        "action": "Model card creation",
+        "description": "Create detailed model cards following industry standards"
+      },
+      {
+        "step": 3,
+        "action": "Training data summary",
+        "description": "Prepare public summary of training data sources"
+      },
+      {
+        "step": 4,
+        "action": "Documentation maintenance",
+        "description": "Keep documentation current with model updates"
+      }
+    ],
+    "controls": [
+      {
+        "code": "GPA-001",
+        "name": "Comprehensive Model Documentation",
+        "description": "Complete documentation of GPAI model development and capabilities",
+        "category": "GPAI_MODEL",
+        "implementationGuide": "Create standardized model documentation templates and processes",
+        "evidenceRequirements": ["Model cards", "Training documentation", "Capability assessments"],
+        "controlType": "MANUAL",
+        "priority": "HIGH",
+        "implementationEffort": "HIGH"
+      },
+      {
+        "code": "GPA-002",
+        "name": "Training Data Transparency",
+        "description": "Public disclosure of training data sources and governance",
+        "category": "GPAI_MODEL",
+        "implementationGuide": "Prepare and publish training data summaries following legal review",
+        "evidenceRequirements": ["Public summaries", "Legal approvals", "Data source documentation"],
+        "controlType": "MANUAL",
+        "priority": "MEDIUM",
+        "implementationEffort": "MEDIUM"
+      }
+    ]
+  }
+]

@@ -2,50 +2,197 @@
  * System Details Page Component
  */
 
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Edit, Download, Clock, CheckCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { API_ENDPOINTS, getAuthHeaders } from '../config/api';
+import { 
+  ArrowLeft, 
+  Edit, 
+  Download, 
+  Clock, 
+  CheckCircle, 
+  AlertTriangle,
+  AlertCircle,
+  Shield,
+  Info,
+  ChevronRight,
+  FileText,
+  Settings,
+  Users
+} from 'lucide-react';
+
+interface AISystemDetails {
+  id: string;
+  name: string;
+  description: string;
+  purpose: string;
+  intendedUse: string;
+  actorRole: string;
+  riskLevel: string | null;
+  status: string;
+  gpaiFlag: boolean;
+  usesGPAI: boolean;
+  providesEssentialService: boolean;
+  categories: string[];
+  geographicScope: string;
+  targetUsers: string;
+  dataTypes: string[];
+  automationLevel: string;
+  transparencyMeasures: string | null;
+  humanOversight: string | null;
+  performanceMetrics: string | null;
+  biasControls: string | null;
+  foreseenMisuse: string | null;
+  technicalDocumentation: string | null;
+  createdAt: string;
+  updatedAt: string;
+  owner: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  riskAssessments?: Array<{
+    id: string;
+    classification: string;
+    rationale: string;
+    confidence: number;
+    euActArticles: string[];
+    annexCategories: string[];
+    assessedAt: string;
+    assessedBy: string;
+  }>;
+}
 
 export const SystemDetails: React.FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [system, setSystem] = useState<AISystemDetails | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Mock data - would normally fetch from API
-  const system = {
-    id,
-    systemName: 'Customer Support Chatbot',
-    systemDescription: 'AI-powered chatbot for customer service interactions using natural language processing',
-    systemPurpose: 'Automate customer support responses and improve response time',
-    intendedUse: 'Handle common customer queries and route complex issues to human agents',
-    actorRole: 'deployer',
-    riskLevel: 'limited',
-    status: 'classified',
-    isGPAI: false,
-    usesGPAI: true,
-    providesEssentialService: false,
-    categories: ['customer_service'],
-    geographicScope: 'eu',
-    targetUsers: 'General public, customers',
-    dataTypes: ['Personal Data', 'Communication Data'],
-    automationLevel: 'assistive',
-    transparencyMeasures: 'Clear notification that users are interacting with an AI system',
-    humanOversight: 'Human agents can intervene and override AI decisions at any time',
-    createdAt: '2024-01-15T10:30:00',
-    lastModified: '2024-01-20T14:45:00',
-    owner: {
-      name: 'John Doe',
-      email: 'john@example.com'
-    },
-    riskAssessment: {
-      assessedAt: '2024-01-20T15:00:00',
-      confidenceScore: 0.85,
-      rationale: 'System interacts directly with humans and requires transparency obligations under Article 52',
-      recommendations: [
-        'Implement clear user notification mechanisms',
-        'Ensure human oversight capabilities',
-        'Document transparency measures'
-      ]
+  useEffect(() => {
+    fetchSystemDetails();
+  }, [id]);
+
+  const fetchSystemDetails = async () => {
+    try {
+      console.log('Fetching system details for ID:', id);
+      const response = await fetch(API_ENDPOINTS.INTAKE_DETAIL(id!), {
+        headers: getAuthHeaders()
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('API Response:', result);
+      
+      if (result.success) {
+        console.log('Setting system data:', result.data);
+        setSystem(result.data);
+      } else {
+        setError(result.error || 'Failed to fetch system details');
+      }
+    } catch (err) {
+      console.error('Error fetching system:', err);
+      setError('Failed to fetch system details');
+    } finally {
+      setLoading(false);
     }
   };
+
+  const getRiskLevelConfig = (level: string | null) => {
+    const configs = {
+      'PROHIBITED': { 
+        label: 'Unacceptable',
+        icon: AlertTriangle, 
+        color: 'text-red-600 bg-red-50 border-red-200',
+        bgColor: 'bg-red-100'
+      },
+      'HIGH_RISK': { 
+        label: 'High Risk',
+        icon: AlertCircle, 
+        color: 'text-orange-600 bg-orange-50 border-orange-200',
+        bgColor: 'bg-orange-100'
+      },
+      'LIMITED_RISK': { 
+        label: 'Limited Risk',
+        icon: Shield, 
+        color: 'text-yellow-600 bg-yellow-50 border-yellow-200',
+        bgColor: 'bg-yellow-100'
+      },
+      'MINIMAL_RISK': { 
+        label: 'Minimal Risk',
+        icon: CheckCircle, 
+        color: 'text-green-600 bg-green-50 border-green-200',
+        bgColor: 'bg-green-100'
+      }
+    };
+
+    return configs[level || ''] || { 
+      label: 'Unclassified',
+      icon: Info, 
+      color: 'text-gray-600 bg-gray-50 border-gray-200',
+      bgColor: 'bg-gray-100'
+    };
+  };
+
+  const formatCategoryName = (category: string): string => {
+    const categoryNames: { [key: string]: string } = {
+      'annex_iii_1': 'Biometric Identification',
+      'annex_iii_2': 'Critical Infrastructure',
+      'annex_iii_3': 'Education & Training',
+      'annex_iii_4': 'Employment & Workers',
+      'annex_iii_5': 'Essential Services',
+      'annex_iii_6': 'Law Enforcement',
+      'annex_iii_7': 'Migration & Border Control',
+      'annex_iii_8': 'Justice & Democracy',
+      'biometrics': 'Biometrics',
+      'critical_infrastructure': 'Critical Infrastructure',
+      'education': 'Education',
+      'employment': 'Employment',
+      'essential_services': 'Essential Services',
+      'law_enforcement': 'Law Enforcement',
+      'migration': 'Migration',
+      'justice': 'Justice'
+    };
+    return categoryNames[category] || category;
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[600px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading system details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !system) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+        <div className="flex items-center">
+          <AlertCircle className="h-5 w-5 text-red-600 mr-2" />
+          <p className="text-red-800">{error || 'System not found'}</p>
+        </div>
+        <Link 
+          to="/registry" 
+          className="mt-4 inline-flex items-center text-blue-600 hover:text-blue-700"
+        >
+          <ArrowLeft className="h-4 w-4 mr-1" />
+          Back to Registry
+        </Link>
+      </div>
+    );
+  }
+
+  const riskConfig = getRiskLevelConfig(system.riskLevel);
+  const RiskIcon = riskConfig.icon;
+  const latestAssessment = system.riskAssessments?.[0];
+
 
   return (
     <div className="space-y-6">
@@ -88,7 +235,7 @@ export const SystemDetails: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <p className="text-sm text-gray-600 mb-1">Confidence Score</p>
           <p className="text-lg font-semibold text-gray-900">
-            {(system.riskAssessment.confidenceScore * 100).toFixed(0)}%
+            {latestAssessment ? `${(latestAssessment.confidence * 100).toFixed(0)}%` : 'N/A'}
           </p>
         </div>
       </div>
@@ -117,13 +264,43 @@ export const SystemDetails: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm font-medium text-gray-700 mb-1">Actor Role</p>
-                  <p className="text-gray-600 capitalize">{system.actorRole}</p>
+                  <p className="text-gray-600 capitalize">{system.actorRole ? system.actorRole.toLowerCase() : 'N/A'}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-700 mb-1">Geographic Scope</p>
                   <p className="text-gray-600 uppercase">{system.geographicScope}</p>
                 </div>
               </div>
+              {system.categories && system.categories.length > 0 && (
+                <div>
+                  <p className="text-sm font-medium text-gray-700 mb-2">Categories</p>
+                  <div className="flex flex-wrap gap-2">
+                    {system.categories.map((cat, idx) => (
+                      <span 
+                        key={idx}
+                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700"
+                      >
+                        {formatCategoryName(cat)}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {system.dataTypes && system.dataTypes.length > 0 && (
+                <div>
+                  <p className="text-sm font-medium text-gray-700 mb-2">Data Types</p>
+                  <div className="flex flex-wrap gap-2">
+                    {system.dataTypes.map((type, idx) => (
+                      <span 
+                        key={idx}
+                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700"
+                      >
+                        {type}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -144,6 +321,24 @@ export const SystemDetails: React.FC = () => {
                 <p className="text-sm font-medium text-gray-700 mb-1">Automation Level</p>
                 <p className="text-gray-600 capitalize">{system.automationLevel}</p>
               </div>
+              {system.performanceMetrics && (
+                <div>
+                  <p className="text-sm font-medium text-gray-700 mb-1">Performance Metrics</p>
+                  <p className="text-gray-600">{system.performanceMetrics}</p>
+                </div>
+              )}
+              {system.biasControls && (
+                <div>
+                  <p className="text-sm font-medium text-gray-700 mb-1">Bias Controls</p>
+                  <p className="text-gray-600">{system.biasControls}</p>
+                </div>
+              )}
+              {system.foreseenMisuse && (
+                <div>
+                  <p className="text-sm font-medium text-gray-700 mb-1">Foreseen Misuse</p>
+                  <p className="text-gray-600">{system.foreseenMisuse}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -161,24 +356,13 @@ export const SystemDetails: React.FC = () => {
                   <div>
                     <p className="text-sm font-medium text-gray-700">Assessed</p>
                     <p className="text-sm text-gray-600">
-                      {new Date(system.riskAssessment.assessedAt).toLocaleString()}
+                      {new Date(latestAssessment.assessedAt).toLocaleString()}
                     </p>
                   </div>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-700 mb-2">Rationale</p>
-                  <p className="text-sm text-gray-600">{system.riskAssessment.rationale}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-700 mb-2">Recommendations</p>
-                  <ul className="space-y-1">
-                    {system.riskAssessment.recommendations.map((rec, idx) => (
-                      <li key={idx} className="text-sm text-gray-600 flex items-start">
-                        <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                        {rec}
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="text-sm text-gray-600">{latestAssessment.rationale}</p>
                 </div>
               </div>
             </div>

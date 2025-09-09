@@ -4,6 +4,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { API_ENDPOINTS, getAuthHeaders } from '../config/api';
 import { 
   AlertTriangle, 
   Shield, 
@@ -36,6 +37,11 @@ interface DashboardStats {
     type: string;
     dueDate: string;
   }>;
+  compliance: {
+    compliantSystems: number;
+    pendingReview: number;
+    complianceRate: number;
+  };
 }
 
 export const Dashboard: React.FC = () => {
@@ -49,7 +55,12 @@ export const Dashboard: React.FC = () => {
       unclassified: 0
     },
     recentActivity: [],
-    pendingTasks: []
+    pendingTasks: [],
+    compliance: {
+      compliantSystems: 0,
+      pendingReview: 0,
+      complianceRate: 0
+    }
   });
 
   const [loading, setLoading] = useState(true);
@@ -61,31 +72,24 @@ export const Dashboard: React.FC = () => {
 
   const fetchDashboardData = async () => {
     try {
-      // This would normally fetch from the API
-      // For now, using mock data
-      setTimeout(() => {
-        setStats({
-          totalSystems: 12,
-          byRiskLevel: {
-            unacceptable: 1,
-            high: 3,
-            limited: 4,
-            minimal: 2,
-            unclassified: 2
-          },
-          recentActivity: [
-            { id: '1', action: 'System Classified', system: 'Customer Support Bot', timestamp: '2 hours ago' },
-            { id: '2', action: 'Intake Submitted', system: 'Fraud Detection Model', timestamp: '5 hours ago' },
-            { id: '3', action: 'Policy Updated', system: 'HR Screening Tool', timestamp: '1 day ago' }
-          ],
-          pendingTasks: [
-            { id: '1', title: 'Complete risk assessment', type: 'Assessment', dueDate: 'Today' },
-            { id: '2', title: 'Review compliance documentation', type: 'Review', dueDate: 'Tomorrow' },
-            { id: '3', title: 'Submit quarterly report', type: 'Report', dueDate: 'Next week' }
-          ]
-        });
-        setLoading(false);
-      }, 1000);
+      const response = await fetch(API_ENDPOINTS.INTAKE_DASHBOARD, {
+        headers: getAuthHeaders()
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setStats(result.data);
+      } else {
+        console.error('API error:', result.error);
+        // Keep empty stats if API fails
+      }
+      
+      setLoading(false);
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
       setLoading(false);
@@ -260,7 +264,7 @@ export const Dashboard: React.FC = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-600">Compliant Systems</p>
-                <p className="text-2xl font-bold text-gray-900">7</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.compliance.compliantSystems}</p>
               </div>
             </div>
 
@@ -272,7 +276,7 @@ export const Dashboard: React.FC = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-600">Pending Review</p>
-                <p className="text-2xl font-bold text-gray-900">3</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.compliance.pendingReview}</p>
               </div>
             </div>
 
@@ -284,7 +288,7 @@ export const Dashboard: React.FC = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-600">Compliance Rate</p>
-                <p className="text-2xl font-bold text-gray-900">70%</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.compliance.complianceRate}%</p>
               </div>
             </div>
           </div>

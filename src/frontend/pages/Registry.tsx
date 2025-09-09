@@ -4,6 +4,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { API_ENDPOINTS, getAuthHeaders } from '../config/api';
 import { 
   Search, 
   Filter, 
@@ -55,75 +56,59 @@ export const Registry: React.FC = () => {
 
   const fetchSystems = async () => {
     try {
-      // This would normally fetch from the API
-      // For now, using mock data
-      setTimeout(() => {
-        setSystems([
-          {
-            id: '1',
-            systemName: 'Customer Support Chatbot',
-            systemDescription: 'AI-powered chatbot for customer service interactions',
-            actorRole: 'deployer',
-            riskLevel: 'limited',
-            status: 'deployed',
-            lifecycleStage: 'production',
-            createdAt: '2024-01-15',
-            owner: { name: 'John Doe', email: 'john@example.com' },
-            lastAssessment: { date: '2024-01-20', confidenceScore: 0.85 }
+      const queryParams = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: '20',
+        sortBy: 'createdAt',
+        sortOrder: 'desc',
+        ...(filterRiskLevel !== 'all' && { riskLevel: filterRiskLevel }),
+        ...(filterStatus !== 'all' && { status: filterStatus })
+      });
+
+      const response = await fetch(`${API_ENDPOINTS.INTAKE_LIST}?${queryParams}`, {
+        headers: getAuthHeaders()
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      if (result.success) {
+        // Transform backend data to match frontend interface
+        const transformedSystems = result.data.map((system: any) => ({
+          id: system.id,
+          systemName: system.name,
+          systemDescription: system.description,
+          actorRole: system.actorRole.toLowerCase(),
+          riskLevel: system.riskLevel || 'unclassified',
+          status: system.status.toLowerCase(),
+          lifecycleStage: 'production', // Default for now
+          createdAt: new Date(system.createdAt).toISOString().split('T')[0],
+          owner: {
+            name: system.owner.name || 'Unknown',
+            email: system.owner.email || 'unknown@example.com'
           },
-          {
-            id: '2',
-            systemName: 'Fraud Detection Model',
-            systemDescription: 'Machine learning model for detecting fraudulent transactions',
-            actorRole: 'provider',
-            riskLevel: 'high',
-            status: 'classified',
-            lifecycleStage: 'testing',
-            createdAt: '2024-01-10',
-            owner: { name: 'Jane Smith', email: 'jane@example.com' },
-            lastAssessment: { date: '2024-01-18', confidenceScore: 0.92 }
-          },
-          {
-            id: '3',
-            systemName: 'HR Screening Tool',
-            systemDescription: 'Automated resume screening and candidate ranking system',
-            actorRole: 'deployer',
-            riskLevel: 'high',
-            status: 'approved',
-            lifecycleStage: 'deployment',
-            createdAt: '2024-01-05',
-            owner: { name: 'Mike Johnson', email: 'mike@example.com' },
-            lastAssessment: { date: '2024-01-12', confidenceScore: 0.88 }
-          },
-          {
-            id: '4',
-            systemName: 'Medical Diagnosis Assistant',
-            systemDescription: 'AI system to assist doctors in preliminary diagnosis',
-            actorRole: 'provider',
-            riskLevel: 'high',
-            status: 'draft',
-            lifecycleStage: 'design',
-            createdAt: '2024-01-20',
-            owner: { name: 'Sarah Lee', email: 'sarah@example.com' }
-          },
-          {
-            id: '5',
-            systemName: 'Content Moderation System',
-            systemDescription: 'Automated content filtering for user-generated content',
-            actorRole: 'deployer',
-            riskLevel: 'minimal',
-            status: 'deployed',
-            lifecycleStage: 'production',
-            createdAt: '2023-12-20',
-            owner: { name: 'Tom Wilson', email: 'tom@example.com' },
-            lastAssessment: { date: '2024-01-05', confidenceScore: 0.79 }
-          }
-        ]);
-        setTotalPages(2);
-        setLoading(false);
-      }, 1000);
+          ...(system.riskAssessments && system.riskAssessments.length > 0 && {
+            lastAssessment: {
+              date: new Date(system.riskAssessments[0].assessedAt).toISOString().split('T')[0],
+              confidenceScore: system.riskAssessments[0].confidence || 0
+            }
+          })
+        }));
+
+        setSystems(transformedSystems);
+        setTotalPages(result.pagination.pages);
+      } else {
+        console.error('API error:', result.error);
+        setSystems([]);
+      }
+      
+      setLoading(false);
     } catch (error) {
       console.error('Failed to fetch systems:', error);
+      setSystems([]);
       setLoading(false);
     }
   };

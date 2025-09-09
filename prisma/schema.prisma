@@ -26,6 +26,8 @@ model Tenant {
   policies          Policy[]
   auditLogs         AuditLog[]
   settings          TenantSettings?
+  documentTemplates DocumentTemplate[]
+  assessmentWorkflows AssessmentWorkflow[]
 }
 
 model User {
@@ -98,7 +100,25 @@ model AISystem {
   dataResidency     String
   controllerStatus  ControllerStatus
   gpaiFlag          Boolean   @default(false)
+  usesGPAI          Boolean   @default(false)
+  providesEssentialService Boolean @default(false)
   euDbRegistrationId String?
+  
+  // Intake form data
+  intendedUse       String?
+  categories        String[]  @default([])
+  geographicScope   String?
+  targetUsers       String?
+  dataTypes         String[]  @default([])
+  automationLevel   String?
+  
+  // Risk management fields
+  transparencyMeasures      String?
+  humanOversight           String?
+  performanceMetrics       String?
+  biasControls            String?
+  foreseenMisuse          String?
+  technicalDocumentation  String?
   
   // Classification
   riskLevel         RiskLevel?
@@ -126,6 +146,7 @@ model AISystem {
   reviews           Review[]
   complianceChecks  ComplianceCheck[]
   euRegistration    EUDatabaseRegistration?
+  assessmentExecutions AssessmentExecution[]
   
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -163,6 +184,10 @@ model Document {
   systemId          String
   system            AISystem  @relation(fields: [systemId], references: [id])
   
+  // Template relationship (optional)
+  templateId        String?
+  template          DocumentTemplate? @relation(fields: [templateId], references: [id])
+  
   type              DocumentType
   name              String
   fileUrl           String
@@ -178,6 +203,7 @@ model Document {
   
   @@index([systemId])
   @@index([type])
+  @@index([templateId])
 }
 
 model EUDatabaseRegistration {
@@ -213,13 +239,29 @@ model Policy {
   euActArticle      String?
   description       String
   content           Json      // Rich text content
+  purpose           String?
+  scope             String?
+  responsibilities  Json?     // Array of responsibility objects
+  procedures        Json?     // Array of procedure steps
   
   version           String    @default("1.0")
   isActive          Boolean   @default(true)
   isTemplate        Boolean   @default(false)
+  isPreBuilt        Boolean   @default(false)  // Part of EU AI Act Policy Pack
+  
+  // Template and customization
+  templateVariables Json?     // Variables for customization
+  organizationConfig Json?    // Organization-specific parameters
   
   controls          Control[]
   complianceChecks  ComplianceCheck[]
+  
+  // Approval workflow
+  status            PolicyStatus @default(DRAFT)
+  approvedBy        String?
+  approvedAt        DateTime?
+  reviewSchedule    DateTime?
+  effectivenessScore Float?
   
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -227,6 +269,8 @@ model Policy {
   
   @@index([tenantId])
   @@index([category])
+  @@index([isTemplate])
+  @@index([isPreBuilt])
   @@unique([tenantId, name, version])
 }
 
@@ -244,12 +288,27 @@ model Control {
   evidenceRequirements String[]
   automationAvailable Boolean @default(false)
   
+  // Enhanced for Policy Pack
+  controlType       ControlType @default(MANUAL)
+  priority          ControlPriority @default(MEDIUM)
+  implementationEffort String?    // LOW, MEDIUM, HIGH
+  integrationPoints Json?         // Array of integration possibilities
+  
+  // Effectiveness tracking
+  effectivenessMetrics Json?      // KPIs for this control
+  implementationStatus ControlStatus @default(NOT_IMPLEMENTED)
+  implementationDate DateTime?
+  lastTested        DateTime?
+  testResults       Json?
+  
   complianceChecks  ComplianceCheck[]
   
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
   
   @@index([policyId])
+  @@index([category])
+  @@index([controlType])
 }
 
 model ComplianceCheck {
@@ -326,6 +385,100 @@ model AuditLog {
   @@index([userId])
   @@index([resourceType, resourceId])
   @@index([timestamp])
+}
+
+// ============ Policy Pack Extensions ============
+
+model DocumentTemplate {
+  id                String    @id @default(cuid())
+  tenantId          String
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  
+  name              String
+  category          DocumentTemplateCategory
+  euActRequirement  String?   // e.g., "Article 11", "Annex VIII"
+  description       String
+  
+  // Template content
+  templateContent   Json      // Rich template structure
+  variables         Json?     // Template variables for customization
+  sections          Json      // Template sections and structure
+  
+  // Metadata
+  isPreBuilt        Boolean   @default(false)
+  version           String    @default("1.0")
+  language          String    @default("en")
+  
+  // Generated documents from this template
+  documents         Document[]
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@index([tenantId])
+  @@index([category])
+  @@index([isPreBuilt])
+}
+
+model AssessmentWorkflow {
+  id                String    @id @default(cuid())
+  tenantId          String
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  
+  name              String
+  type              AssessmentType
+  description       String
+  
+  // Workflow definition
+  stages            Json      // Array of workflow stages
+  requirements      Json      // Requirements per stage
+  stakeholders      Json      // Stakeholder assignments
+  slaHours          Int?      // SLA in hours
+  
+  // Template settings
+  isTemplate        Boolean   @default(false)
+  isActive          Boolean   @default(true)
+  
+  // Workflow instances
+  executions        AssessmentExecution[]
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@index([tenantId])
+  @@index([type])
+}
+
+model AssessmentExecution {
+  id                String    @id @default(cuid())
+  workflowId        String
+  workflow          AssessmentWorkflow @relation(fields: [workflowId], references: [id])
+  
+  systemId          String
+  system            AISystem  @relation(fields: [systemId], references: [id])
+  
+  // Execution status
+  status            AssessmentStatus @default(NOT_STARTED)
+  currentStage      Int       @default(0)
+  completionPercent Int       @default(0)
+  
+  // Stakeholders and assignments
+  assignedUsers     Json      // Array of assigned user IDs
+  completedBy       Json?     // Array of completion records
+  
+  // Timeline
+  startedAt         DateTime  @default(now())
+  dueDate           DateTime?
+  completedAt       DateTime?
+  
+  // Results
+  findings          Json?     // Assessment findings
+  recommendations   Json?     // Recommendations
+  evidence          Json?     // Attached evidence
+  
+  @@index([systemId])
+  @@index([workflowId])
+  @@index([status])
 }
 
 model TenantSettings {
@@ -411,6 +564,45 @@ enum PolicyCategory {
   TRANSPARENCY
   HUMAN_OVERSIGHT
   CYBERSECURITY
+  RISK_MANAGEMENT
+  TECHNICAL_DOCUMENTATION
+  RECORD_KEEPING
+  CONFORMITY_ASSESSMENT
+}
+
+enum PolicyStatus {
+  DRAFT
+  UNDER_REVIEW
+  APPROVED
+  PUBLISHED
+  DEPRECATED
+  ARCHIVED
+}
+
+enum ControlType {
+  MANUAL
+  AUTOMATED
+  HYBRID
+  DETECTIVE
+  PREVENTIVE
+  CORRECTIVE
+}
+
+enum ControlPriority {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum ControlStatus {
+  NOT_IMPLEMENTED
+  PLANNED
+  IN_PROGRESS
+  IMPLEMENTED
+  TESTED
+  VERIFIED
+  FAILED
 }
 
 enum ComplianceStatus {
@@ -435,4 +627,39 @@ enum ReviewStatus {
   APPROVED
   REJECTED
   CONDITIONAL
+}
+
+enum DocumentTemplateCategory {
+  TECHNICAL_DOCUMENTATION
+  INSTRUCTIONS_FOR_USE
+  RISK_MANAGEMENT
+  CONFORMITY_DECLARATION
+  EU_DATABASE_REGISTRATION
+  TRAINING_DATA_SUMMARY
+  GPAI_MODEL_CARD
+  IMPACT_ASSESSMENT
+  AUDIT_REPORT
+  OTHER
+}
+
+enum AssessmentType {
+  CONFORMITY_ASSESSMENT
+  RISK_ASSESSMENT
+  IMPACT_ASSESSMENT
+  COMPLIANCE_REVIEW
+  TECHNICAL_REVIEW
+  LEGAL_REVIEW
+  ETHICS_REVIEW
+  CONTINUOUS_MONITORING
+}
+
+enum AssessmentStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  BLOCKED
+  UNDER_REVIEW
+  COMPLETED
+  APPROVED
+  REJECTED
+  CANCELLED
 }

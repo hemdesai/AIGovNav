@@ -51,30 +51,76 @@ const ClassificationRequestSchema = z.object({
  */
 router.post(
   '/',
-  authenticateUser,
-  authorizeRole(['submitter', 'reviewer', 'admin']),
-  validateRequest(IntakeCreateSchema),
   async (req: Request, res: Response) => {
     try {
-      const userId = (req as any).user.id;
-      const tenantId = (req as any).user.tenantId;
+      // For development: Create or get demo user/tenant
+      let tenant = await prisma.tenant.findFirst({
+        where: { name: 'Demo Tenant' }
+      });
+      
+      if (!tenant) {
+        tenant = await prisma.tenant.create({
+          data: {
+            name: 'Demo Tenant',
+            domain: 'demo.aigovnav.com'
+          }
+        });
+      }
+
+      let user = await prisma.user.findFirst({
+        where: { email: 'demo@aigovnav.com' }
+      });
+
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            email: 'demo@aigovnav.com',
+            name: 'Demo User',
+            tenantId: tenant.id
+          }
+        });
+      }
+
+      const userId = user.id;
+      const tenantId = tenant.id;
       const intakeData = req.body;
 
       // Create the intake submission
       const intake = await prisma.aISystem.create({
         data: {
-          ...intakeData,
+          name: intakeData.name,
+          description: intakeData.description,
+          purpose: intakeData.purpose,
+          actorRole: intakeData.actorRole.toUpperCase(),
+          dataResidency: intakeData.dataResidency || 'EU',
+          controllerStatus: intakeData.controllerStatus || 'CONTROLLER',
+          gpaiFlag: intakeData.isGPAI || false,
+          usesGPAI: intakeData.usesGPAI || false,
+          providesEssentialService: intakeData.providesEssentialService || false,
+          modelType: intakeData.modelType || 'Unknown',
+          deploymentContext: intakeData.deploymentContext || 'Production',
+          department: intakeData.department || 'AI Development',
+          
+          // Intake form fields
+          intendedUse: intakeData.intendedUse,
+          categories: intakeData.categories || [],
+          geographicScope: intakeData.geographicScope,
+          targetUsers: intakeData.targetUsers,
+          dataTypes: intakeData.dataTypes || [],
+          automationLevel: intakeData.automationLevel,
+          
+          // Risk management fields
+          transparencyMeasures: intakeData.transparencyMeasures,
+          humanOversight: intakeData.humanOversight,
+          performanceMetrics: intakeData.performanceMetrics,
+          biasControls: intakeData.biasControls,
+          foreseenMisuse: intakeData.foreseenMisuse,
+          technicalDocumentation: intakeData.technicalDocumentation,
+          
           tenantId,
+          creatorId: userId,
           ownerId: userId,
-          status: 'draft',
-          lifecycleStage: 'design',
-          // Initial risk level will be set after classification
-          riskLevel: 'unclassified',
-          metadata: {
-            submittedAt: new Date().toISOString(),
-            submittedBy: userId,
-            version: 1
-          }
+          status: 'DRAFT'
         },
         include: {
           owner: {
@@ -87,23 +133,76 @@ router.post(
         }
       });
 
-      // Log the action
-      await auditLogger.log({
-        tenantId,
-        userId,
-        action: 'AI_SYSTEM_CREATED',
-        entityType: 'AISystem',
-        entityId: intake.id,
-        metadata: {
-          systemName: intake.systemName
-        }
-      });
+      // Log the action (skipped for development)
+      console.log(`✅ AI System created: ${intake.name} (ID: ${intake.id})`);
 
-      res.status(201).json({
-        success: true,
-        data: intake,
-        message: 'AI system intake created successfully'
-      });
+      // Automatically trigger risk classification
+      try {
+        console.log(`🔍 Starting automatic risk classification for system ${intake.id}`);
+        const classification = await riskClassifier.classifySystem(intake);
+
+        // Create risk assessment record
+        await prisma.riskAssessment.create({
+          data: {
+            systemId: intake.id,
+            classification: classification.riskLevel,
+            rationale: classification.rationale,
+            confidence: classification.confidenceScore,
+            euActArticles: classification.euActArticles || [],
+            annexCategories: classification.annexIIICategories || [],
+            assessedBy: 'SYSTEM'
+          }
+        });
+
+        // Update the AI system with new risk level and status
+        const updatedIntake = await prisma.aISystem.update({
+          where: { id: intake.id },
+          data: {
+            riskLevel: classification.riskLevel,
+            status: 'UNDER_REVIEW'
+          },
+          include: {
+            owner: {
+              select: {
+                id: true,
+                email: true,
+                name: true
+              }
+            },
+            riskAssessments: {
+              orderBy: {
+                assessedAt: 'desc'
+              },
+              take: 1
+            }
+          }
+        });
+
+        console.log(`✅ AI System classified: ${classification.riskLevel} risk (ID: ${intake.id})`);
+
+        res.status(201).json({
+          success: true,
+          data: {
+            ...updatedIntake,
+            classification: {
+              riskLevel: classification.riskLevel,
+              confidenceScore: classification.confidenceScore,
+              rationale: classification.rationale,
+              mitigationRequired: classification.mitigationRequired,
+              recommendations: classification.recommendations
+            }
+          },
+          message: `AI system intake created and classified as ${classification.riskLevel} risk`
+        });
+      } catch (classificationError) {
+        console.error('Classification error (non-blocking):', classificationError);
+        // If classification fails, still return success for intake creation
+        res.status(201).json({
+          success: true,
+          data: intake,
+          message: 'AI system intake created successfully (classification pending)'
+        });
+      }
     } catch (error) {
       console.error('Error creating intake:', error);
       res.status(500).json({
@@ -115,27 +214,176 @@ router.post(
 );
 
 /**
+ * GET /api/v1/intake/dashboard
+ * Get dashboard statistics
+ */
+router.get(
+  '/dashboard',
+  async (req: Request, res: Response) => {
+    try {
+      // Get demo user for development
+      const user = await prisma.user.findFirst({
+        where: { email: 'demo@aigovnav.com' }
+      });
+      
+      if (!user) {
+        return res.status(400).json({
+          success: false,
+          error: 'Demo user not found'
+        });
+      }
+
+      const tenantId = user.tenantId;
+
+      // Get total systems count
+      const totalSystems = await prisma.aISystem.count({
+        where: { tenantId }
+      });
+
+      // Get systems by risk level
+      const riskLevelStats = await prisma.aISystem.groupBy({
+        by: ['riskLevel'],
+        where: { tenantId },
+        _count: true
+      });
+
+      // Convert to the expected format
+      const byRiskLevel = {
+        unacceptable: 0,
+        high: 0,
+        limited: 0,
+        minimal: 0,
+        unclassified: 0
+      };
+
+      riskLevelStats.forEach(stat => {
+        switch (stat.riskLevel) {
+          case 'PROHIBITED':
+            byRiskLevel.unacceptable = stat._count;
+            break;
+          case 'HIGH_RISK':
+            byRiskLevel.high = stat._count;
+            break;
+          case 'LIMITED_RISK':
+            byRiskLevel.limited = stat._count;
+            break;
+          case 'MINIMAL_RISK':
+            byRiskLevel.minimal = stat._count;
+            break;
+          case null:
+            byRiskLevel.unclassified = stat._count;
+            break;
+        }
+      });
+
+      // Get recent activity (last 5 systems)
+      const recentSystems = await prisma.aISystem.findMany({
+        where: { tenantId },
+        orderBy: { updatedAt: 'desc' },
+        take: 5,
+        include: {
+          riskAssessments: {
+            orderBy: { assessedAt: 'desc' },
+            take: 1
+          }
+        }
+      });
+
+      const recentActivity = recentSystems.map(system => ({
+        id: system.id,
+        action: system.riskLevel ? 'System Classified' : 'Intake Submitted',
+        system: system.name,
+        timestamp: formatTimeAgo(system.updatedAt)
+      }));
+
+      // Get pending tasks (systems needing review)
+      const pendingSystems = await prisma.aISystem.findMany({
+        where: {
+          tenantId,
+          status: 'UNDER_REVIEW'
+        },
+        take: 5
+      });
+
+      const pendingTasks = pendingSystems.map(system => ({
+        id: system.id,
+        title: `Review ${system.name}`,
+        type: 'Assessment',
+        dueDate: 'Today' // Simplified for now
+      }));
+
+      // Calculate compliance stats
+      const compliantSystems = await prisma.aISystem.count({
+        where: {
+          tenantId,
+          status: { in: ['APPROVED', 'IN_PRODUCTION'] }
+        }
+      });
+
+      const pendingReview = await prisma.aISystem.count({
+        where: {
+          tenantId,
+          status: 'UNDER_REVIEW'
+        }
+      });
+
+      const complianceRate = totalSystems > 0 
+        ? Math.round((compliantSystems / totalSystems) * 100)
+        : 0;
+
+      res.json({
+        success: true,
+        data: {
+          totalSystems,
+          byRiskLevel,
+          recentActivity,
+          pendingTasks,
+          compliance: {
+            compliantSystems,
+            pendingReview,
+            complianceRate
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch dashboard data'
+      });
+    }
+  }
+);
+
+/**
  * GET /api/v1/intake/:id
  * Get intake details by ID
  */
 router.get(
   '/:id',
-  authenticateUser,
   async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const userId = (req as any).user.id;
-      const tenantId = (req as any).user.tenantId;
+      
+      // For development: Get demo user/tenant
+      const user = await prisma.user.findFirst({
+        where: { email: 'demo@aigovnav.com' }
+      });
+      
+      if (!user) {
+        return res.status(400).json({
+          success: false,
+          error: 'Demo user not found'
+        });
+      }
+
+      const userId = user.id;
+      const tenantId = user.tenantId;
 
       const intake = await prisma.aISystem.findFirst({
         where: {
           id,
-          tenantId,
-          // Users can only see their own submissions unless they're reviewers/admins
-          ...(!(req as any).user.roles.includes('reviewer') && 
-             !(req as any).user.roles.includes('admin') && {
-            ownerId: userId
-          })
+          tenantId
         },
         include: {
           owner: {
@@ -151,9 +399,9 @@ router.get(
             },
             take: 1
           },
-          complianceRecords: {
+          complianceChecks: {
             where: {
-              status: 'active'
+              status: 'COMPLIANT'
             }
           }
         }
@@ -271,15 +519,25 @@ router.put(
  */
 router.post(
   '/:id/classify',
-  authenticateUser,
-  authorizeRole(['reviewer', 'admin']),
-  validateRequest(ClassificationRequestSchema),
   async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const userId = (req as any).user.id;
-      const tenantId = (req as any).user.tenantId;
-      const { forceReclassification } = req.body;
+      const { forceReclassification } = req.body || {};
+
+      // Get demo user for development
+      const user = await prisma.user.findFirst({
+        where: { email: 'demo@aigovnav.com' }
+      });
+      
+      if (!user) {
+        return res.status(400).json({
+          success: false,
+          error: 'Demo user not found'
+        });
+      }
+
+      const userId = user.id;
+      const tenantId = user.tenantId;
 
       // Fetch the AI system
       const aiSystem = await prisma.aISystem.findFirst({
@@ -305,7 +563,7 @@ router.post(
       }
 
       // Check if already classified and not forcing reclassification
-      if (aiSystem.riskLevel !== 'unclassified' && !forceReclassification) {
+      if (aiSystem.riskLevel !== null && !forceReclassification) {
         return res.status(400).json({
           success: false,
           error: 'System already classified. Set forceReclassification=true to override.'
@@ -318,21 +576,13 @@ router.post(
       // Create risk assessment record
       const riskAssessment = await prisma.riskAssessment.create({
         data: {
-          aiSystemId: id,
-          tenantId,
-          assessorId: userId,
-          assessedAt: new Date(),
-          riskLevel: classification.riskLevel,
-          confidenceScore: classification.confidenceScore,
-          annexIIICategories: classification.annexIIICategories,
+          systemId: id,
+          classification: classification.riskLevel,
           rationale: classification.rationale,
-          mitigationRequired: classification.mitigationRequired,
-          recommendations: classification.recommendations,
-          metadata: {
-            classificationVersion: '1.0',
-            euAiActVersion: '2024',
-            automatedClassification: true
-          }
+          confidence: classification.confidenceScore,
+          euActArticles: classification.euActArticles || [],
+          annexCategories: classification.annexIIICategories || [],
+          assessedBy: 'SYSTEM'
         }
       });
 
@@ -341,22 +591,12 @@ router.post(
         where: { id },
         data: {
           riskLevel: classification.riskLevel,
-          status: 'classified'
+          status: 'UNDER_REVIEW'
         }
       });
 
-      // Log the classification
-      await auditLogger.log({
-        tenantId,
-        userId,
-        action: 'AI_SYSTEM_CLASSIFIED',
-        entityType: 'AISystem',
-        entityId: id,
-        metadata: {
-          riskLevel: classification.riskLevel,
-          confidenceScore: classification.confidenceScore
-        }
-      });
+      // Log the classification (skipped for development)
+      console.log(`✅ AI System classified: ${classification.riskLevel} risk (ID: ${id})`);
 
       res.json({
         success: true,
@@ -383,11 +623,22 @@ router.post(
  */
 router.get(
   '/',
-  authenticateUser,
   async (req: Request, res: Response) => {
     try {
-      const userId = (req as any).user.id;
-      const tenantId = (req as any).user.tenantId;
+      // Get demo user for development
+      const user = await prisma.user.findFirst({
+        where: { email: 'demo@aigovnav.com' }
+      });
+      
+      if (!user) {
+        return res.status(400).json({
+          success: false,
+          error: 'Demo user not found'
+        });
+      }
+
+      const userId = user.id;
+      const tenantId = user.tenantId;
       const { 
         status, 
         riskLevel, 
@@ -400,10 +651,7 @@ router.get(
 
       const where: any = {
         tenantId,
-        // Non-admins can only see their own submissions
-        ...(!(req as any).user.roles.includes('admin') && {
-          ownerId: userId
-        }),
+        // For development: show all systems for demo user
         ...(status && { status }),
         ...(riskLevel && { riskLevel }),
         ...(actorRole && { actorRole })
@@ -423,7 +671,7 @@ router.get(
             _count: {
               select: {
                 riskAssessments: true,
-                complianceRecords: true
+                complianceChecks: true
               }
             }
           },
@@ -455,5 +703,21 @@ router.get(
     }
   }
 );
+
+// Helper function for time formatting
+function formatTimeAgo(date: Date): string {
+  const now = new Date();
+  const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+  
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes} minutes ago`;
+  } else if (diffInMinutes < 1440) {
+    const hours = Math.floor(diffInMinutes / 60);
+    return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+  } else {
+    const days = Math.floor(diffInMinutes / 1440);
+    return `${days} day${days > 1 ? 's' : ''} ago`;
+  }
+}
 
 export default router;

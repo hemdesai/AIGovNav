@@ -2,7 +2,9 @@
  * Policy Packs Page Component
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { API_ENDPOINTS } from '../config/api';
 import { 
   FileText, 
   Download, 
@@ -27,14 +29,55 @@ interface PolicyPack {
   lastUpdated: string;
   status: 'active' | 'draft' | 'archived';
   compliance: number;
+  isFunctional?: boolean;
+  appliedSystems?: number;
+  totalApplicableSystems?: number;
 }
 
 export const PolicyPacks: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [policyPacks, setPolicyPacks] = useState<PolicyPack[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock data - would normally fetch from API
-  const policyPacks: PolicyPack[] = [
+  useEffect(() => {
+    fetchPolicyPacks();
+  }, []);
+
+  const fetchPolicyPacks = async () => {
+    try {
+      const response = await fetch(API_ENDPOINTS.POLICY_PACKS, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        // Transform the data to match our interface
+        const transformedPacks = result.data.map((pack: any) => ({
+          ...pack,
+          applicableRiskLevels: pack.applicableRiskLevels?.map((level: string) => 
+            level.replace('_RISK', '').toLowerCase()
+          ) || []
+        }));
+        console.log('Policy packs received:', transformedPacks);
+        setPolicyPacks(transformedPacks);
+      } else {
+        // Fallback to mock data if API fails
+        setPolicyPacks(getMockPolicyPacks());
+      }
+    } catch (error) {
+      console.error('Failed to fetch policy packs:', error);
+      setPolicyPacks(getMockPolicyPacks());
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Mock data fallback
+  const getMockPolicyPacks = (): PolicyPack[] => [
     {
       id: '1',
       title: 'EU AI Act High-Risk Requirements',
@@ -45,7 +88,10 @@ export const PolicyPacks: React.FC = () => {
       controls: 42,
       lastUpdated: '2024-01-15',
       status: 'active',
-      compliance: 85
+      compliance: 85,
+      isFunctional: true,
+      appliedSystems: 0,
+      totalApplicableSystems: 6
     },
     {
       id: '2',
@@ -193,11 +239,28 @@ export const PolicyPacks: React.FC = () => {
       {/* Policy Pack Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {filteredPacks.map(pack => (
-          <div key={pack.id} className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+          <div 
+            key={pack.id} 
+            className={`rounded-lg shadow-sm border hover:shadow-md transition-shadow ${
+              pack.isFunctional 
+                ? 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-300' 
+                : 'bg-white border-gray-200'
+            }`}
+            style={pack.isFunctional ? { 
+              background: 'linear-gradient(to bottom right, #eff6ff, #eef2ff)',
+              borderColor: '#93c5fd'
+            } : {}}>
             <div className="p-6">
               <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{pack.title}</h3>
+                <div className="flex-1">
+                  <div className="flex items-start gap-2">
+                    <h3 className="text-lg font-semibold text-gray-900">{pack.title}</h3>
+                    {pack.isFunctional && (
+                      <span className="px-2 py-0.5 bg-blue-600 text-white text-xs rounded-full font-medium">
+                        FUNCTIONAL
+                      </span>
+                    )}
+                  </div>
                   <p className="text-sm text-gray-600 mt-1">{pack.description}</p>
                 </div>
                 {getStatusBadge(pack.status)}
@@ -224,6 +287,23 @@ export const PolicyPacks: React.FC = () => {
                 </div>
               </div>
 
+              {pack.isFunctional && (
+                <div className="mb-4 p-3 bg-blue-100 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-blue-900">Applied Systems</span>
+                    <span className="text-sm font-bold text-blue-900">
+                      {pack.appliedSystems || 0} / {pack.totalApplicableSystems || 0}
+                    </span>
+                  </div>
+                  <div className="mt-2 w-full bg-blue-200 rounded-full h-2">
+                    <div 
+                      className="bg-blue-600 h-2 rounded-full transition-all"
+                      style={{ width: `${pack.totalApplicableSystems > 0 ? (pack.appliedSystems / pack.totalApplicableSystems) * 100 : 0}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="mb-4">
                 <p className="text-sm text-gray-600 mb-2">Applicable Risk Levels</p>
                 <div className="flex gap-2">
@@ -243,9 +323,12 @@ export const PolicyPacks: React.FC = () => {
                   Last updated: {new Date(pack.lastUpdated).toLocaleDateString()}
                 </p>
                 <div className="flex items-center gap-2">
-                  <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg">
+                  <Link 
+                    to={`/policy-packs/${pack.id}`}
+                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg"
+                  >
                     <Eye className="h-4 w-4" />
-                  </button>
+                  </Link>
                   <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg">
                     <Download className="h-4 w-4" />
                   </button>

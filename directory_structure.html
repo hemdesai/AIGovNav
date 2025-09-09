@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Governance Navigator - Directory Structure</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #2d3748;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .tree {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+        .section {
+            flex: 1;
+            min-width: 300px;
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+        }
+        .section-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #4a5568;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #cbd5e0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .folder {
+            margin-left: 20px;
+            margin-top: 8px;
+            position: relative;
+        }
+        .folder::before {
+            content: "├─ ";
+            position: absolute;
+            left: -20px;
+            color: #a0aec0;
+        }
+        .folder:last-child::before {
+            content: "└─ ";
+        }
+        .folder-name {
+            font-weight: 600;
+            color: #2d3748;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .subfolder {
+            margin-left: 40px;
+            margin-top: 5px;
+            color: #4a5568;
+            font-size: 0.95em;
+        }
+        .file {
+            margin-left: 40px;
+            margin-top: 3px;
+            color: #718096;
+            font-size: 0.9em;
+        }
+        .icon {
+            display: inline-block;
+            width: 20px;
+            text-align: center;
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+            padding: 20px;
+            background: #edf2f7;
+            border-radius: 12px;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #5a67d8;
+        }
+        .stat-label {
+            color: #4a5568;
+            margin-top: 5px;
+        }
+        .legend {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4a5568;
+        }
+        @media (max-width: 768px) {
+            .section {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 AI Governance Navigator</h1>
+        <div class="subtitle">Complete Project Directory Structure</div>
+        
+        <div class="tree">
+            <!-- Core Application -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="icon">💻</span> Core Application
+                </div>
+                <div class="folder">
+                    <span class="folder-name"><span class="icon">📁</span> src/</span>
+                    <div class="subfolder">
+                        <div class="folder">
+                            <span class="folder-name">📂 backend/</span>
+                            <div class="file">• data/ (templates, policies)</div>
+                            <div class="file">• middleware/ (auth, validation)</div>
+                            <div class="file">• routes/ (intake, compliance)</div>
+                            <div class="file">• services/ (risk classification)</div>
+                            <div class="file">• scripts/ (initialization)</div>
+                            <div class="file">• index.ts</div>
+                        </div>
+                        <div class="folder">
+                            <span class="folder-name">📂 frontend/</span>
+                            <div class="file">• components/ (Layout, Routes)</div>
+                            <div class="file">• contexts/ (AuthContext)</div>
+                            <div class="file">• pages/ (Dashboard, Registry)</div>
+                            <div class="file">• services/ (API layer)</div>
+                            <div class="file">• App.tsx, main.tsx</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="folder">
+                    <span class="folder-name"><span class="icon">🗄️</span> prisma/</span>
+                    <div class="file">• schema.prisma (database)</div>
+                </div>
+            </div>
+
+            <!-- Quality Assurance -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="icon">✅</span> Quality Assurance
+                </div>
+                <div class="folder">
+                    <span class="folder-name"><span class="icon">📁</span> qa/</span>
+                    <div class="subfolder">
+                        <div class="folder">
+                            <span class="folder-name">📂 src/</span>
+                            <div class="file">• validators/</div>
+                            <div class="file">  - EUAIActCompliance.ts</div>
+                            <div class="file">  - LLMGovernance.ts</div>
+                            <div class="file">  - PrismaIntegrity.ts</div>
+                            <div class="file">• security/</div>
+                            <div class="file">• performance/</div>
+                            <div class="file">• quality/</div>
+                            <div class="file">• architecture/</div>
+                            <div class="file">• testing/</div>
+                            <div class="file">• cli.ts, pipeline.ts</div>
+                        </div>
+                        <div class="folder">
+                            <span class="folder-name">📂 config/</span>
+                            <div class="file">• qa.config.ts</div>
+                        </div>
+                        <div class="folder">
+                            <span class="folder-name">📂 reports/</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="folder">
+                    <span class="folder-name"><span class="icon">🧪</span> tests/</span>
+                    <div class="file">• unit/ (intake, risk tests)</div>
+                    <div class="file">• integration/ (auth tests)</div>
+                    <div class="file">• setup.ts</div>
+                </div>
+            </div>
+
+            <!-- Swarm Agents -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="icon">🤖</span> Swarm Agents
+                </div>
+                <div class="folder">
+                    <span class="folder-name"><span class="icon">📁</span> product/</span>
+                    <div class="file">• user-stories-ai-intake.md</div>
+                    <div class="file">• api-specs-stage0.md</div>
+                    <div class="file">• requirements-eu-ai-act.md</div>
+                    <div class="file">• requirements-rbac-sso.md</div>
+                </div>
+                <div class="folder">
+                    <span class="folder-name"><span class="icon">📁</span> engineer/</span>
+                    <div class="file">• init-engineer-swarm.md</div>
+                    <div class="file">• swarm-config.json</div>
+                </div>
+                <div class="folder">
+                    <span class="folder-name"><span class="icon">📁</span> designer/</span>
+                    <div class="file">• init-designer-swarm.md</div>
+                    <div class="file">• swarm-config.json</div>
+                </div>
+            </div>
+
+            <!-- Configuration & DevOps -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="icon">⚙️</span> Configuration & DevOps
+                </div>
+                <div class="folder">
+                    <span class="folder-name"><span class="icon">📁</span> .github/</span>
+                    <div class="file">• workflows/qa.yml</div>
+                </div>
+                <div class="folder">
+                    <span class="folder-name"><span class="icon">🐳</span> Docker</span>
+                    <div class="file">• docker-compose.yml</div>
+                </div>
+                <div class="folder">
+                    <span class="folder-name"><span class="icon">📦</span> Package Management</span>
+                    <div class="file">• package.json</div>
+                    <div class="file">• tsconfig.json</div>
+                    <div class="file">• vite.config.ts</div>
+                    <div class="file">• vitest.config.ts</div>
+                    <div class="file">• tailwind.config.js</div>
+                </div>
+                <div class="folder">
+                    <span class="folder-name"><span class="icon">📝</span> Documentation</span>
+                    <div class="file">• CLAUDE.md</div>
+                    <div class="file">• QA_CALIBRATION_SUMMARY.md</div>
+                    <div class="file">• CTO_DEMO_MATERIALS.md</div>
+                </div>
+            </div>
+
+            <!-- Reference Materials -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="icon">📚</span> Reference & Research
+                </div>
+                <div class="folder">
+                    <span class="folder-name"><span class="icon">📁</span> Reference/</span>
+                    <div class="subfolder">
+                        <div class="folder">
+                            <span class="folder-name">📂 Market Research/</span>
+                            <div class="file">• AIGovNav Research.md</div>
+                            <div class="file">• images/ (7 files)</div>
+                            <div class="file">• conversion_report.md</div>
+                        </div>
+                        <div class="file">• AI Registry.png</div>
+                        <div class="file">• HR System Test.png</div>
+                        <div class="file">• dashboard.png</div>
+                        <div class="file">• swarm diagrams (2)</div>
+                    </div>
+                </div>
+                <div class="folder">
+                    <span class="folder-name"><span class="icon">📋</span> Guides</span>
+                    <div class="file">• replit-setup-guide.md</div>
+                    <div class="file">• setup-github.md</div>
+                    <div class="file">• start-local.md</div>
+                    <div class="file">• swarm-orchestrator.md</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">147+</div>
+                <div class="stat-label">QA Checkpoints</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">8</div>
+                <div class="stat-label">QA Validators</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Swarm Agents</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">27</div>
+                <div class="stat-label">EU AI Act Checks</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">23</div>
+                <div class="stat-label">LLM Gov Checks</div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <span class="icon">💻</span> Core Application Code
+            </div>
+            <div class="legend-item">
+                <span class="icon">✅</span> Quality Assurance
+            </div>
+            <div class="legend-item">
+                <span class="icon">🤖</span> AI Agents
+            </div>
+            <div class="legend-item">
+                <span class="icon">⚙️</span> Configuration
+            </div>
+            <div class="legend-item">
+                <span class="icon">📚</span> Documentation
+            </div>
+        </div>
+    </div>
+</body>
+</html>
