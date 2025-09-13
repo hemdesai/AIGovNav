@@ -2,8 +2,9 @@
  * Policy Pack Detail Page
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { API_ENDPOINTS } from '../config/api';
 import { 
   ArrowLeft, 
   Download, 
@@ -16,7 +17,8 @@ import {
   Calendar,
   BarChart,
   BookOpen,
-  AlertTriangle
+  AlertTriangle,
+  X
 } from 'lucide-react';
 
 // Mock data for policy packs (same as in PolicyPacks.tsx)
@@ -145,6 +147,11 @@ const policyPacksData = {
 export const PolicyPackDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [showApplyDialog, setShowApplyDialog] = useState(false);
+  const [availableSystems, setAvailableSystems] = useState([]);
+  const [selectedSystems, setSelectedSystems] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [applying, setApplying] = useState(false);
   
   const pack = policyPacksData[id as keyof typeof policyPacksData];
 
@@ -187,6 +194,99 @@ export const PolicyPackDetail: React.FC = () => {
     if (score >= 90) return 'text-green-600 bg-green-50';
     if (score >= 70) return 'text-yellow-600 bg-yellow-50';
     return 'text-red-600 bg-red-50';
+  };
+
+  const handleApplyClick = async () => {
+    if (id !== '1') {
+      alert('Only the EU AI Act High-Risk Requirements pack is functional in this demo');
+      return;
+    }
+    
+    setLoading(true);
+    setShowApplyDialog(true);
+    
+    try {
+      const response = await fetch(API_ENDPOINTS.POLICY_SYSTEMS(id), {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      const result = await response.json();
+      if (result.success) {
+        setAvailableSystems(result.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch systems:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleApplySubmit = async () => {
+    if (selectedSystems.length === 0) {
+      alert('Please select at least one system');
+      return;
+    }
+
+    setApplying(true);
+    
+    try {
+      const response = await fetch(API_ENDPOINTS.POLICY_APPLY, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          policyPackId: id,
+          systemIds: selectedSystems
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        // Enhanced success feedback
+        setShowApplyDialog(false);
+        setSelectedSystems([]);
+        
+        // Create animated success message
+        const successMsg = document.createElement('div');
+        successMsg.innerHTML = `
+          <div class="fixed top-4 right-4 z-50 transform transition-all duration-500 ease-out">
+            <div class="bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-2">
+              <div class="text-2xl animate-bounce">🎉</div>
+              <div>
+                <div class="font-semibold">Success!</div>
+                <div class="text-sm">Policy applied to ${result.data.appliedCount} system(s)</div>
+              </div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(successMsg);
+        
+        // Remove notification and refresh
+        setTimeout(() => {
+          successMsg.remove();
+          window.location.reload();
+        }, 2000);
+      } else {
+        alert(result.error || 'Failed to apply policy pack');
+      }
+    } catch (error) {
+      console.error('Failed to apply policy pack:', error);
+      alert('Failed to apply policy pack');
+    } finally {
+      setApplying(false);
+    }
+  };
+
+  const toggleSystemSelection = (systemId: string) => {
+    setSelectedSystems(prev => 
+      prev.includes(systemId) 
+        ? prev.filter(id => id !== systemId)
+        : [...prev, systemId]
+    );
   };
 
   return (
@@ -367,7 +467,10 @@ export const PolicyPackDetail: React.FC = () => {
                 <p className="text-sm text-blue-700 mt-1">
                   This policy pack can be applied to your AI systems with matching risk levels to ensure compliance.
                 </p>
-                <button className="mt-3 inline-flex items-center px-3 py-1.5 border border-blue-600 text-sm font-medium rounded-lg text-blue-600 hover:bg-blue-100">
+                <button 
+                  onClick={() => handleApplyClick()}
+                  className="mt-3 inline-flex items-center px-3 py-1.5 border border-blue-600 text-sm font-medium rounded-lg text-blue-600 hover:bg-blue-100"
+                >
                   Apply Policy Pack
                 </button>
               </div>
@@ -375,6 +478,100 @@ export const PolicyPackDetail: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Apply Policy Pack Dialog */}
+      {showApplyDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setShowApplyDialog(false)} />
+          <div className="bg-white rounded-lg shadow-xl z-10 w-full max-w-2xl mx-4">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">Apply Policy Pack to Systems</h2>
+              <button 
+                onClick={() => setShowApplyDialog(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            
+            <div className="p-6">
+              <div className="mb-4">
+                <h3 className="text-sm font-medium text-gray-900 mb-2">Policy Pack Details</h3>
+                <div className="bg-blue-50 rounded-lg p-4">
+                  <p className="font-medium text-blue-900">{pack?.title}</p>
+                  <p className="text-sm text-blue-700 mt-1">{pack?.description}</p>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <h3 className="text-sm font-medium text-gray-900 mb-3">Select AI Systems to Apply Policy</h3>
+                {loading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin h-8 w-8 border-b-2 border-blue-600 rounded-full mx-auto mb-2"></div>
+                    <p className="text-sm text-gray-500">Loading available systems...</p>
+                  </div>
+                ) : availableSystems.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <Shield className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+                    <p>No high-risk AI systems found.</p>
+                    <p className="text-sm mt-1">Create high-risk AI systems first to apply this policy pack.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {availableSystems.map((system: any) => (
+                      <div key={system.id} className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                        <input
+                          type="checkbox"
+                          id={`system-${system.id}`}
+                          checked={selectedSystems.includes(system.id)}
+                          onChange={() => toggleSystemSelection(system.id)}
+                          className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                        />
+                        <label htmlFor={`system-${system.id}`} className="ml-3 flex-1 cursor-pointer">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{system.name}</p>
+                              <p className="text-xs text-gray-500">
+                                Status: {system.status} | Created: {new Date(system.createdAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">
+                              High Risk
+                            </span>
+                          </div>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
+              <button
+                onClick={() => setShowApplyDialog(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleApplySubmit}
+                disabled={selectedSystems.length === 0 || applying}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {applying ? (
+                  <>
+                    <div className="animate-spin h-4 w-4 border-b-2 border-white rounded-full mr-2 inline-block"></div>
+                    Applying...
+                  </>
+                ) : (
+                  `Apply to ${selectedSystems.length} System${selectedSystems.length !== 1 ? 's' : ''}`
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

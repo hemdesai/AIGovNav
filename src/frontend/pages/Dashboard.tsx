@@ -3,8 +3,32 @@
  */
 
 import React, { useEffect, useState } from 'react';
+
+// Counter animation hook
+const useCountUp = (end: number, duration: number = 1500) => {
+  const [count, setCount] = useState(0);
+  
+  useEffect(() => {
+    let start = 0;
+    const increment = end / (duration / 50);
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        setCount(end);
+        clearInterval(timer);
+      } else {
+        setCount(Math.ceil(start));
+      }
+    }, 50);
+    
+    return () => clearInterval(timer);
+  }, [end, duration]);
+  
+  return count;
+};
 import { Link } from 'react-router-dom';
 import { API_ENDPOINTS, getAuthHeaders } from '../config/api';
+import { SkeletonStats } from '../components/SkeletonLoader';
 import { 
   AlertTriangle, 
   Shield, 
@@ -185,16 +209,37 @@ export const Dashboard: React.FC = () => {
         </div>
         <div className="p-6">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {Object.entries(stats.byRiskLevel).map(([level, count]) => {
+            {Object.entries(stats.byRiskLevel).map(([level, count], index) => {
               const Icon = getRiskLevelIcon(level);
+              const AnimatedCount = () => {
+                const animatedValue = useCountUp(count, 1000 + (index * 200));
+                return <span>{animatedValue}</span>;
+              };
+              
               return (
-                <div key={level} className="text-center">
-                  <div className={`inline-flex p-3 rounded-lg ${getRiskLevelColor(level)}`}>
-                    <Icon className="h-6 w-6" />
+                <Link 
+                  key={level} 
+                  to={`/registry?riskLevel=${level}`}
+                  className="text-center transform hover:scale-110 transition-all duration-200 cursor-pointer group"
+                >
+                  <div className={`inline-flex p-3 rounded-lg ${getRiskLevelColor(level)} hover:shadow-lg transition-all duration-200 group-hover:shadow-xl`}>
+                    <Icon className="h-6 w-6 group-hover:scale-110 transition-transform duration-200" />
                   </div>
-                  <p className="mt-2 text-2xl font-bold text-gray-900">{count}</p>
-                  <p className="text-sm text-gray-600 capitalize">{level}</p>
-                </div>
+                  <p className="mt-2 text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-200">
+                    <AnimatedCount />
+                  </p>
+                  <p className="text-sm text-gray-600 capitalize group-hover:text-blue-700 transition-colors duration-200">
+                    {level} {count === 1 ? 'System' : 'Systems'}
+                  </p>
+                  {count > 0 && (
+                    <div className="mt-1">
+                      <span className="inline-block w-2 h-2 bg-current rounded-full opacity-60 animate-pulse group-hover:opacity-100"></span>
+                    </div>
+                  )}
+                  <div className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <span className="text-xs text-blue-600 font-medium">Click to view →</span>
+                  </div>
+                </Link>
               );
             })}
           </div>

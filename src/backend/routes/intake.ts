@@ -10,6 +10,7 @@ import { authenticateUser, authorizeRole } from '../middleware/auth';
 import { validateRequest } from '../middleware/validation';
 import { RiskClassificationService } from '../services/riskClassification';
 import { AuditLogService } from '../services/auditLog';
+import { buildRiskLevelWhere } from '../utils/riskLevelUtils';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -653,7 +654,7 @@ router.get(
         tenantId,
         // For development: show all systems for demo user
         ...(status && { status }),
-        ...(riskLevel && { riskLevel }),
+        ...buildRiskLevelWhere(riskLevel),
         ...(actorRole && { actorRole })
       };
 

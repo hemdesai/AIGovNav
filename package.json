@@ -1,7 +1,7 @@
 {
   "name": "ai-governance-navigator",
-  "version": "0.1.0",
-  "description": "Enterprise SaaS for EU AI Act compliance with real-time LLM/prompt monitoring",
+  "version": "0.2.0",
+  "description": "Enterprise SaaS for EU AI Act compliance with interactive dashboard and real-time LLM monitoring",
   "private": true,
   "type": "module",
   "scripts": {

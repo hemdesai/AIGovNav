@@ -78,7 +78,11 @@
       "Bash(start C:codeAIGovNavdirectory_structure.html)",
       "Bash(python:*)",
       "Bash(start \"\" \"C:\\code\\AIGovNav\\Reference\\generate_directory_image.html\")",
-      "Bash(del nul)"
+      "Bash(del nul)",
+      "Read(//c/**)",
+      "Bash(npx kill-port:*)",
+      "Bash(start \"\" \"http://localhost:5176\")",
+      "Bash(start \"\" \"http://localhost:5173\")"
     ],
     "deny": [],
     "ask": []

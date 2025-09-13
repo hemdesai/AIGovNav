@@ -17,7 +17,9 @@ AI Governance Navigator is a **GenAI-first governance SaaS platform** that provi
 - **🔍 AI-Powered Risk Classification** - Real-time EU AI Act risk assessment using LLM
 - **📋 Automated Policy Deployment** - One-click compliance with 42 EU AI Act controls
 - **🎛️ LLM Governance** - Prompt-level monitoring and guardrails
-- **📊 Compliance Dashboard** - Real-time risk overview and system tracking
+- **📊 Interactive Dashboard** - Clickable risk cards, animated counters, and seamless navigation
+- **📝 Dynamic AI Registry** - URL-based filtering, enhanced status badges, and real-time updates
+- **🎨 Enhanced UX** - Modern animations, hover effects, and responsive design
 - **🔐 Enterprise Ready** - RBAC, SSO, audit trails, and API-first architecture
 - **⚡ Quality Assurance** - 147+ automated compliance and security checks
 
@@ -135,11 +137,18 @@ Navigate to `/intake/new` and experience **"AI classifying AI"**:
 - Watch real-time EU AI Act risk classification → **HIGH RISK**
 - See detailed rationale with Annex III categories
 
-### 2. AI Registry Dashboard
-Visit `/registry` for complete portfolio visibility:
+### 2. Interactive Dashboard & Registry
+Visit the Dashboard for comprehensive system oversight:
+- **Clickable Risk Level Cards** - Click any of the 5 risk categories to filter systems
+- **Real-time Statistics** - Animated counters showing system distribution
+- **Dynamic Registry Navigation** - Seamless filtering between Dashboard and Registry
+- **Enhanced Visual Feedback** - Status badges, hover effects, and smooth transitions
+
+Navigate to `/registry` for complete portfolio visibility:
 - Risk distribution across all AI systems
 - Compliance status tracking
 - Drill-down system details with confidence scores
+- **URL-based Filtering** - Direct links to filtered views (e.g., `/registry?riskLevel=high`)
 
 ### 3. Policy Packs (Functional MVP)
 Access `/policy-packs` for policy automation:
@@ -203,10 +212,12 @@ AIGovNav/
 │   │   ├── pages/         # Route components
 │   │   ├── components/    # Reusable UI components
 │   │   ├── config/        # API configuration
+│   │   ├── utils/         # Data transformations and utilities
 │   │   └── services/      # API client services
 │   └── backend/           # Node.js Express API
 │       ├── routes/        # API route handlers
 │       ├── services/      # Business logic
+│       ├── utils/         # Risk level handling and utilities
 │       ├── data/          # Static data and templates
 │       └── scripts/       # Utility scripts
 ├── prisma/                # Database schema and migrations

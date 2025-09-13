@@ -34,6 +34,29 @@ interface PolicyPack {
   totalApplicableSystems?: number;
 }
 
+// Simple counter animation hook
+const useCountUp = (end: number, duration: number = 1000) => {
+  const [count, setCount] = useState(0);
+  
+  useEffect(() => {
+    let start = 0;
+    const increment = end / (duration / 50);
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        setCount(end);
+        clearInterval(timer);
+      } else {
+        setCount(Math.ceil(start));
+      }
+    }, 50);
+    
+    return () => clearInterval(timer);
+  }, [end, duration]);
+  
+  return count;
+};
+
 export const PolicyPacks: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -238,13 +261,19 @@ export const PolicyPacks: React.FC = () => {
 
       {/* Policy Pack Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {filteredPacks.map(pack => (
+        {filteredPacks.map(pack => {
+          const AnimatedCompliance = () => {
+            const animatedValue = useCountUp(pack.compliance, 1500);
+            return <span>{animatedValue}</span>;
+          };
+          
+          return (
           <div 
             key={pack.id} 
-            className={`rounded-lg shadow-sm border hover:shadow-md transition-shadow ${
+            className={`rounded-lg shadow-sm border hover:shadow-xl hover:scale-105 transform transition-all duration-300 cursor-pointer ${
               pack.isFunctional 
-                ? 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-300' 
-                : 'bg-white border-gray-200'
+                ? 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-300 hover:border-blue-400' 
+                : 'bg-white border-gray-200 hover:border-gray-300'
             }`}
             style={pack.isFunctional ? { 
               background: 'linear-gradient(to bottom right, #eff6ff, #eef2ff)',
@@ -256,8 +285,8 @@ export const PolicyPacks: React.FC = () => {
                   <div className="flex items-start gap-2">
                     <h3 className="text-lg font-semibold text-gray-900">{pack.title}</h3>
                     {pack.isFunctional && (
-                      <span className="px-2 py-0.5 bg-blue-600 text-white text-xs rounded-full font-medium">
-                        FUNCTIONAL
+                      <span className="px-2 py-0.5 bg-blue-600 text-white text-xs rounded-full font-medium animate-pulse shadow-lg">
+                        ⚡ FUNCTIONAL
                       </span>
                     )}
                   </div>
@@ -281,9 +310,14 @@ export const PolicyPacks: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Compliance</p>
-                  <p className={`text-sm font-medium ${getComplianceColor(pack.compliance)}`}>
-                    {pack.compliance}%
-                  </p>
+                  <div className="flex items-center gap-1">
+                    <p className={`text-sm font-medium ${getComplianceColor(pack.compliance)}`}>
+                      <AnimatedCompliance />%
+                    </p>
+                    <span className="text-lg">
+                      {pack.compliance >= 90 ? '🎯' : pack.compliance >= 70 ? '⚡' : '⚠️'}
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -295,11 +329,14 @@ export const PolicyPacks: React.FC = () => {
                       {pack.appliedSystems || 0} / {pack.totalApplicableSystems || 0}
                     </span>
                   </div>
-                  <div className="mt-2 w-full bg-blue-200 rounded-full h-2">
+                  <div className="mt-2 w-full bg-blue-200 rounded-full h-3 overflow-hidden">
                     <div 
-                      className="bg-blue-600 h-2 rounded-full transition-all"
+                      className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
                       style={{ width: `${pack.totalApplicableSystems > 0 ? (pack.appliedSystems / pack.totalApplicableSystems) * 100 : 0}%` }}
-                    />
+                    >
+                      {/* Animated shine effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 -skew-x-12 animate-pulse"></div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -336,7 +373,8 @@ export const PolicyPacks: React.FC = () => {
               </div>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Quick Links */}

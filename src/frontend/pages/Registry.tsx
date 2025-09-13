@@ -3,8 +3,10 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { API_ENDPOINTS, getAuthHeaders } from '../config/api';
+import { SkeletonTable } from '../components/SkeletonLoader';
+import { transformAISystems, AISystem } from '../utils/dataTransforms';
 import { 
   Search, 
   Filter, 
@@ -21,34 +23,26 @@ import {
   Download
 } from 'lucide-react';
 
-interface AISystem {
-  id: string;
-  systemName: string;
-  systemDescription: string;
-  actorRole: string;
-  riskLevel: 'unacceptable' | 'high' | 'limited' | 'minimal' | 'unclassified';
-  status: 'draft' | 'classified' | 'approved' | 'deployed' | 'retired';
-  lifecycleStage: string;
-  createdAt: string;
-  owner: {
-    name: string;
-    email: string;
-  };
-  lastAssessment?: {
-    date: string;
-    confidenceScore: number;
-  };
-}
 
 export const Registry: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [systems, setSystems] = useState<AISystem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterRiskLevel, setFilterRiskLevel] = useState<string>('all');
+  const [filterRiskLevel, setFilterRiskLevel] = useState<string>(searchParams.get('riskLevel') || 'all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(!!searchParams.get('riskLevel'));
+
+  // Handle URL parameter changes
+  useEffect(() => {
+    const riskLevelParam = searchParams.get('riskLevel');
+    if (riskLevelParam && riskLevelParam !== filterRiskLevel) {
+      setFilterRiskLevel(riskLevelParam);
+      setShowFilters(true);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     fetchSystems();
@@ -65,6 +59,7 @@ export const Registry: React.FC = () => {
         ...(filterStatus !== 'all' && { status: filterStatus })
       });
 
+
       const response = await fetch(`${API_ENDPOINTS.INTAKE_LIST}?${queryParams}`, {
         headers: getAuthHeaders()
       });
@@ -76,27 +71,7 @@ export const Registry: React.FC = () => {
       const result = await response.json();
       
       if (result.success) {
-        // Transform backend data to match frontend interface
-        const transformedSystems = result.data.map((system: any) => ({
-          id: system.id,
-          systemName: system.name,
-          systemDescription: system.description,
-          actorRole: system.actorRole.toLowerCase(),
-          riskLevel: system.riskLevel || 'unclassified',
-          status: system.status.toLowerCase(),
-          lifecycleStage: 'production', // Default for now
-          createdAt: new Date(system.createdAt).toISOString().split('T')[0],
-          owner: {
-            name: system.owner.name || 'Unknown',
-            email: system.owner.email || 'unknown@example.com'
-          },
-          ...(system.riskAssessments && system.riskAssessments.length > 0 && {
-            lastAssessment: {
-              date: new Date(system.riskAssessments[0].assessedAt).toISOString().split('T')[0],
-              confidenceScore: system.riskAssessments[0].confidence || 0
-            }
-          })
-        }));
+        const transformedSystems = transformAISystems(result.data);
 
         setSystems(transformedSystems);
         setTotalPages(result.pagination.pages);
@@ -114,35 +89,58 @@ export const Registry: React.FC = () => {
   };
 
   const getRiskLevelBadge = (level: string) => {
-    const config = {
-      unacceptable: { icon: AlertTriangle, color: 'bg-red-100 text-red-700 border-red-200' },
-      high: { icon: AlertCircle, color: 'bg-orange-100 text-orange-700 border-orange-200' },
-      limited: { icon: Shield, color: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
-      minimal: { icon: CheckCircle, color: 'bg-green-100 text-green-700 border-green-200' },
-      unclassified: { icon: Clock, color: 'bg-gray-100 text-gray-700 border-gray-200' }
+    const configs = {
+      unacceptable: { 
+        color: 'bg-red-100 text-red-800 border-red-200', 
+        icon: '🚫', 
+        pulse: true 
+      },
+      high: { 
+        color: 'bg-orange-100 text-orange-800 border-orange-200', 
+        icon: '⚠️', 
+        pulse: false 
+      },
+      limited: { 
+        color: 'bg-yellow-100 text-yellow-800 border-yellow-200', 
+        icon: '⚡', 
+        pulse: false 
+      },
+      minimal: { 
+        color: 'bg-green-100 text-green-800 border-green-200', 
+        icon: '✅', 
+        pulse: false 
+      },
+      unclassified: { 
+        color: 'bg-gray-100 text-gray-800 border-gray-200', 
+        icon: '❓', 
+        pulse: false 
+      }
     };
 
-    const { icon: Icon, color } = config[level] || config.unclassified;
-
+    const config = configs[level as keyof typeof configs] || configs.unclassified;
+    
     return (
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${color}`}>
-        <Icon className="h-3 w-3 mr-1" />
+      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${config.color} ${config.pulse ? 'animate-pulse' : ''}`}>
+        <span className="mr-1">{config.icon}</span>
         {level.charAt(0).toUpperCase() + level.slice(1)}
       </span>
     );
   };
 
   const getStatusBadge = (status: string) => {
-    const colors = {
-      draft: 'bg-gray-100 text-gray-700',
-      classified: 'bg-blue-100 text-blue-700',
-      approved: 'bg-green-100 text-green-700',
-      deployed: 'bg-purple-100 text-purple-700',
-      retired: 'bg-red-100 text-red-700'
+    const configs = {
+      draft: { color: 'bg-gray-100 text-gray-800', icon: '📝' },
+      classified: { color: 'bg-blue-100 text-blue-800', icon: '🔍' },
+      approved: { color: 'bg-green-100 text-green-800', icon: '✅' },
+      deployed: { color: 'bg-purple-100 text-purple-800', icon: '🚀' },
+      retired: { color: 'bg-red-100 text-red-800', icon: '🗄️' }
     };
 
+    const config = configs[status as keyof typeof configs] || configs.draft;
+    
     return (
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colors[status] || colors.draft}`}>
+      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${config.color}`}>
+        <span className="mr-1">{config.icon}</span>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
     );
@@ -157,13 +155,30 @@ export const Registry: React.FC = () => {
     return matchesSearch && matchesRisk && matchesStatus;
   });
 
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading AI systems...</p>
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">AI Systems Registry</h1>
+            <p className="mt-1 text-sm text-gray-600">
+              Manage and monitor your organization's AI systems portfolio
+            </p>
+          </div>
         </div>
+        
+        <div className={`rounded-lg shadow-sm border p-4 ${
+          searchParams.get('riskLevel') 
+            ? 'bg-blue-50 border-blue-200' 
+            : 'bg-white border-gray-200'
+        }`}>
+          <div className="animate-pulse">
+            <div className="h-10 bg-gray-200 rounded w-full"></div>
+          </div>
+        </div>
+        
+        <SkeletonTable />
       </div>
     );
   }
@@ -173,12 +188,39 @@ export const Registry: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">AI Systems Registry</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-gray-900">AI Systems Registry</h1>
+            {searchParams.get('riskLevel') && (
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                Filtered by: {searchParams.get('riskLevel')?.replace('_', ' ').toLowerCase()}
+                <button 
+                  onClick={() => {
+                    setFilterRiskLevel('all');
+                    setSearchParams({});
+                  }}
+                  className="ml-2 hover:bg-blue-200 rounded-full p-0.5"
+                >
+                  ✕
+                </button>
+              </span>
+            )}
+          </div>
           <p className="mt-1 text-sm text-gray-600">
-            Manage and monitor your organization's AI systems portfolio
+            {searchParams.get('riskLevel') 
+              ? `Showing ${searchParams.get('riskLevel')} risk systems only`
+              : 'Manage and monitor your organization\'s AI systems portfolio'
+            }
           </p>
         </div>
-        <div className="mt-4 sm:mt-0">
+        <div className="mt-4 sm:mt-0 flex gap-3">
+          {searchParams.get('riskLevel') && (
+            <Link
+              to="/dashboard"
+              className="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+            >
+              ← Back to Dashboard
+            </Link>
+          )}
           <Link
             to="/intake/new"
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -190,7 +232,11 @@ export const Registry: React.FC = () => {
       </div>
 
       {/* Filters and Search */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+      <div className={`rounded-lg shadow-sm border p-4 ${
+        searchParams.get('riskLevel') 
+          ? 'bg-blue-50 border-blue-200' 
+          : 'bg-white border-gray-200'
+      }`}>
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="flex-1 max-w-md">
             <div className="relative">
@@ -298,7 +344,7 @@ export const Registry: React.FC = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredSystems.map((system) => (
-                <tr key={system.id} className="hover:bg-gray-50">
+                <tr key={system.id} className="hover:bg-blue-50 hover:shadow-md transition-all duration-200 cursor-pointer">
                   <td className="px-6 py-4">
                     <div>
                       <p className="text-sm font-medium text-gray-900">{system.systemName}</p>

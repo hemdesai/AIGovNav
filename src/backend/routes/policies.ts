@@ -188,7 +188,7 @@ router.post('/apply', async (req: Request, res: Response) => {
       });
     }
 
-    // Apply policy to systems (update their status)
+    // Apply policy to systems (update their status to APPROVED)
     const updatedSystems = await prisma.aISystem.updateMany({
       where: {
         id: { in: systemIds },
@@ -196,11 +196,7 @@ router.post('/apply', async (req: Request, res: Response) => {
         riskLevel: 'HIGH_RISK'
       },
       data: {
-        status: 'APPROVED',
-        metadata: {
-          policyPackApplied: '1',
-          policyPackAppliedAt: new Date().toISOString()
-        }
+        status: 'APPROVED'
       }
     });
 
